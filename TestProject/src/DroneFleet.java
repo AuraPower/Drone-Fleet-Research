@@ -30,7 +30,7 @@ public class DroneFleet extends JPanel {
   //initialization variables
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 100;
+	  public static int numDrones = 200;
 	  //starting positions
 	  public static int startingx = 900;
 	  public static int startingy = 500;
