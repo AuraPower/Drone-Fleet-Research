@@ -166,13 +166,13 @@ public class DroneFleet extends JPanel {
 	    frame.add(mover);
 	    frame.setVisible(true);
 	    
-//	    checkForFind finder = new checkForFind();
 	    Timer timer = new Timer(simspeed, new ActionListener() {
 	      public void actionPerformed(ActionEvent e) {
 	    	  //if 
 	    	  if(simFlag==1) {
 	  	        mover.moveDrones();
-	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter);
+//	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter);
+	  	        System.out.println("Current hour: " + simCounter);
 	    	  }
 	        simCounter++;
 	      }
