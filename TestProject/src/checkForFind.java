@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class simFunctions {
+public class checkForFind {
 
 	  static int checkForFindFunction(ArrayList<drone> drones, ArrayList<target> targets, int droneSearchRadius, int simCounter) {
 		  //runs through every drone

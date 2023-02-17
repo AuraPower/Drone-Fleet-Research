@@ -45,8 +45,6 @@ public class DroneFleet extends JPanel {
 	  public static int targetX = 600;
 	  public static int targetY = 420;
 	  public static int targetSize = 20;
-	  
-	  ImageIcon droneIMG = new ImageIcon("dronepic.jpg");
   
 	  //BEGIN FUNCTIONS
 	  
@@ -174,7 +172,7 @@ public class DroneFleet extends JPanel {
 	    	  //if 
 	    	  if(simFlag==1) {
 	  	        mover.moveDrones();
-	  	        simFlag = simFunctions.checkForFindFunction(drones,targets,droneSearchRadius,simCounter);
+	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter);
 	    	  }
 	        simCounter++;
 	      }
