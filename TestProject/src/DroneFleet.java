@@ -23,6 +23,7 @@ public class DroneFleet extends JPanel {
   
   
   //public variables
+  	  public static boolean probabilisticRadius = true;
   //timer
   	  public static int simFlag=1;
 	  public static int simCounter=0;
@@ -38,7 +39,7 @@ public class DroneFleet extends JPanel {
 	  //drone size
 	  public static int dronesize = 30;
 	  //drone search radius: how far drones will spot targets
-	  public static int droneSearchRadius = 15;
+	  public static int droneSearchRadius = 100;
 	  //simulation speed speed
 	  public static int simspeed=1; //lower is faster
   //target variables
@@ -69,6 +70,7 @@ public class DroneFleet extends JPanel {
 			  target ctarget = targets.get(i);
 			  g.setColor(ctarget.color);
 			  g.fillOval(ctarget.getX(), ctarget.getY(), ctarget.getSize(), ctarget.getSize());
+			  
 		  }
 		  
 	  }
@@ -171,8 +173,8 @@ public class DroneFleet extends JPanel {
 	    	  //if 
 	    	  if(simFlag==1) {
 	  	        mover.moveDrones();
-//	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter);
-	  	        System.out.println("Current hour: " + simCounter);
+	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);
+//	  	        System.out.println("Current hour: " + simCounter);
 	    	  }
 	        simCounter++;
 	      }
