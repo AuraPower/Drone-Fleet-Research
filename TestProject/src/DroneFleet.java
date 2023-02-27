@@ -24,6 +24,7 @@ public class DroneFleet extends JPanel {
   
   //public variables
   	  public static boolean probabilisticRadius = true;
+  	  public static int currentFrame = 0;
   //timer
   	  public static int simFlag=1;
 	  public static int simCounter=0;
@@ -133,11 +134,12 @@ public class DroneFleet extends JPanel {
 	  //main
 	  public static void main(String[] args) {
 		  //makes screen & sets size, allows it to close on X button in corner
-	    JFrame frame = new JFrame();
-	    frame.setSize(1980, 1080);
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    JFrame sim = new JFrame();
+	    sim.setSize(1980, 1080);
+	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	    //makes a new drone fleet
-	    DroneFleet mover = new DroneFleet();
+	    DroneFleet simFrame = new DroneFleet();
 	    //allows for random variables
 	    Random random = new Random();
 	    //drone creation
@@ -156,23 +158,25 @@ public class DroneFleet extends JPanel {
 	      int xSpeed = getRandom(10);
 	      int ySpeed = getRandom(10);
 	      Color color = Color.black;
-	      mover.drones.add(new drone(startingx, startingy, size, xDirection, yDirection, xSpeed, ySpeed, color));
-	      mover.dronePaths.add(new ArrayList<Integer[]>());
+	      simFrame.drones.add(new drone(startingx, startingy, size, xDirection, yDirection, xSpeed, ySpeed, color));
+	      simFrame.dronePaths.add(new ArrayList<Integer[]>());
 	    }
 	    
 	    //create the target (target)
 	    
-	    mover.targets.add(new target(targetX, targetY, targetSize, Color.RED));
+	    simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));
 	    
 	    //make the frame
-	    frame.add(mover);
-	    frame.setVisible(true);
+	    sim.add(simFrame);
+  	  	if(currentFrame==1) {
+		  sim.setVisible(true);
+  	  	}
 	    
 	    Timer timer = new Timer(simspeed, new ActionListener() {
 	      public void actionPerformed(ActionEvent e) {
-	    	  //if 
+	    	  //if the simflag is on
 	    	  if(simFlag==1) {
-	  	        mover.moveDrones();
+	  	        simFrame.moveDrones();
 	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);
 //	  	        System.out.println("Current hour: " + simCounter);
 	    	  }
@@ -182,6 +186,8 @@ public class DroneFleet extends JPanel {
 	    timer.start();
 	  }
 	} //JPanel end
+
+
 	
 	class drone {
 			int x;
