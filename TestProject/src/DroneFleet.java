@@ -1,5 +1,7 @@
   import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -137,6 +140,10 @@ public class DroneFleet extends JPanel {
 	    JFrame sim = new JFrame();
 	    sim.setSize(1980, 1080);
 	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//Graphics Environment to make fullscreen devices
+		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = graphics.getDefaultScreenDevice();
+  	  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
 
 	    //makes a new drone fleet
 	    DroneFleet simFrame = new DroneFleet();
@@ -168,27 +175,43 @@ public class DroneFleet extends JPanel {
 	    
 	    //make the frame
 	    sim.add(simFrame);
-  	  	if(currentFrame==1) {
-		  sim.setVisible(true);
-  	  	}
+	    sim.setVisible(true);
 	    
-	    Timer timer = new Timer(simspeed, new ActionListener() {
-	      public void actionPerformed(ActionEvent e) {
-	    	  //if the simflag is on
-	    	  if(simFlag==1) {
-	  	        simFrame.moveDrones();
-	  	        simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);
-//	  	        System.out.println("Current hour: " + simCounter);
-	    	  }
-	        simCounter++;
-	      }
-	    });
-	    timer.start();
-	  }
+	  	//create/add the button to start the simulation and switch to that screen
+	  	JButton endButton = new JButton("Open Statistics");
+	  	endButton.setBounds(960-125/2,25,125,30);
+	  	simFrame.add(endButton);
+	  	endButton.setVisible(false);
+	  		//endButton "press" finder
+	  		endButton.addActionListener(new ActionListener() {
+	  			public void actionPerformed(ActionEvent e) {
+	  				System.out.println("End button pressed");//debug - write to console that button was pressed
+	  				sim.setVisible(false);//set the sim panel to not be visible
+	  				Statistics.main(null);//run the statistics class
+	  			}
+	  		});
+	  		
+	  	//MAIN SIM TIMER
+	  	Timer timer = new Timer(simspeed, new ActionListener() {
+	  	     public void actionPerformed(ActionEvent e) {
+	  	    	 if(simFlag==1) {//if simFlag shows sim is on
+	  	  	       simFrame.moveDrones();//move all the drones
+	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for find
+	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
+	  	    		 endButton.setVisible(true);//shows the endButton (moves to statistics screen)
+	  	    	 }
+	  	       simCounter++;//increment the sim counter
+	  	     }
+	  	});
+	  	   timer.start();//start the timer we just created
+	  
+	  }//end main
+	  
+	  
 	} //JPanel end
 
 
-	
+	//drone class for tracking/moving/etc drones
 	class drone {
 			int x;
 			int y;
@@ -256,7 +279,7 @@ public class DroneFleet extends JPanel {
 	}//drone class end
 	
 	
-	//target class
+	//target class for tracking target position, drawing target, etc
 	class target{
 			int x;
 			int y;
