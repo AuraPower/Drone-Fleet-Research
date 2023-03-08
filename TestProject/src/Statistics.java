@@ -31,9 +31,9 @@ public class Statistics extends JPanel {
   	  	statistics.setVisible(true);
   	  	device.setFullScreenWindow(statistics);//set fullscreen using GraphicsEnvironmentDevice
   	  	
-  	  	JLabel timeToFind = new JLabel("Total time to find target: " + DroneFleet.simCounter) ;
+  	  	JLabel timeToFind = new JLabel("Total time to find target: " + (DroneFleet.simCounter-1)) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
   	  	statisticsFrame.add(timeToFind);
-  	  	timeToFind.setBounds(960-150/2,540,150,30);
+  	  	timeToFind.setBounds(960-200/2,540,200,30);
   	  	
   	  	//create/add the button to start the simulation and switch to that screen
 	  	JButton terminateButton = new JButton("Close Program");

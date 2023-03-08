@@ -197,10 +197,10 @@ public class DroneFleet extends JPanel {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
 	  	  	       simFrame.moveDrones();//move all the drones
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for find
+		  	       simCounter++;//increment the sim counter
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		 endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    	 }
-	  	       simCounter++;//increment the sim counter
 	  	     }
 	  	});
 	  	   timer.start();//start the timer we just created
