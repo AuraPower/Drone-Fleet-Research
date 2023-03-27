@@ -43,10 +43,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone size
 	  public static int dronesize = 30;
 	  //drone search radius: how far drones will start to spot targets
-	  public static int droneSearchRadius = 100;
+	  public static int droneSearchRadius = 50;//100 is a mile radius, 50 half mile radius (for maximum search radius)
+	  //drone speed
+	  private static int droneSpeed = 10;//in pixels (100=1 mile per sim count) (10=1 mile per 10 sim count)
   //sim variables
 	  //simulation speed speed
-	  public static int simspeed=1; //lower # is faster
+	  public static int simspeed=20; //lower # is faster
   	  public static int currentFrame = 0;
   //target variables
 	  public static int targetX = 450, targetY = 300, targetSize = 20;
@@ -107,35 +109,25 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  private void moveDrones() {	  //move moves every drone at the same time (1 call = every drone moves)
 		  for (int i = 0; i < drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			  drone drone = drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
-			  drone.setxSpeed(getRandom(10));//sets the drone's x speed magnitude (how far left/right)
-			  drone.setySpeed(getRandom(10));//sets the drone's y speed magnitude (how far up or down)
-		      if(getRandom(1)<0.5) {//uses the random function to decide the drone's y direction (up or down)
-		    	  drone.yDirection = drone.yDirection * -1;
-		      }
-		      if(getRandom(1)<0.5) {//uses the random function to decide the drone's x direction (left or right)
-		    	  drone.xDirection = drone.xDirection * -1;
-		      }
-		      //new position calculations
-		      if((drone.xSpeed * drone.xDirection) + drone.x + drone.size>= getWidth()) {
-		    	  drone.x = drone.x + (-1 * drone.xSpeed);
-		      } else {
-		    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
-		      }
-		      if((drone.xSpeed * drone.xDirection) + drone.x - 10 <= 0) {
-		    	  drone.x = drone.x + (1 * drone.xSpeed);
-		      } else {
-		    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
-		      }
-		      if((drone.ySpeed * drone.yDirection) + drone.y + drone.size>= getHeight()) {
-		    	  drone.y = drone.y + (-1 * drone.ySpeed);
-		      } else {
-		    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
-		      }
-		      if((drone.ySpeed * drone.yDirection) + drone.y - 10 <= 0) {
-		    	  drone.y = drone.y + (1 * drone.ySpeed);
-		      } else {
-		    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
-		      }
+			  
+			  boolean insideArea=false;
+			  int newX = 0;
+		      int newY = 0;
+		      
+			  while(!insideArea) {//while the drone's new position is not within the screen, run this while loop
+			  	Random random = new Random();//create a new random number
+	            double direction = random.nextDouble() * 2 * Math.PI;//Generate a random direction between 0 and 2π radians
+	            int xVelocity = (int) Math.round(droneSpeed * Math.cos(direction));//Calculate the x component of the velocity based on the direction
+	            int yVelocity = (int) Math.round(droneSpeed * Math.sin(direction));//Calculate the y component of the velocity based on the direction
+	            newX = drone.x + xVelocity;//Calculate the new position based on the old position and the random velocity just generated
+	            newY = drone.y + yVelocity;//Calculate the new position based on the old position and the random velocity just generated
+	            
+	            if (newX >= 0 && newX < 1500 && newY >= 0 && newY < 800) {// Check if the new position is inside the screen
+	                insideArea = true;//if the new position is in the area, break out of the while loop
+	            }//end if
+			  }//end while loop
+		        drone.x = newX; //Move the object to the new x position after breaking out of the while loop
+		        drone.y = newY; //Move the object to the new y position after breaking out of the while loop
 		      dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 	      }//end specific drone for loop
 	      repaint();//repaints the screen with the new drones' location
@@ -173,21 +165,11 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	
 	    for (int i = 0; i < numDrones; i++) {//drone creation for loop
 	    	int size = dronesize;//sets each drone's size to the global size
-	    	int xDirection;//initializes xDirection (have to init here for drones arraylist)
-	    	int yDirection;//initializes yDirection (have to init here for drones arraylist)
-	    	if(directionStart==1) {//random direction start condition if statement
-	    		xDirection = random.nextInt(2) * 2 - 1;//randomizes the x direction
-	    		yDirection = random.nextInt(2) * 2 - 1;//randomizes the y direction
-	    	} else {//no direction start condition
-	    		xDirection = 0;//no x direction to start
-	    		yDirection = 0;//no y direction to start
-	    	}//end direction checking
-	      int xSpeed = getRandom(10);//sets the x speed (magnitude) randomly 0-10
-	      int ySpeed = getRandom(10);//sets the y speed (magnitude) randomly 0-10
 	      Color color = Color.black;//makes the drone's color be black (for drawing the component to the screen)
-	      simFrame.drones.add(new drone(startingx, startingy, size, xDirection, yDirection, xSpeed, ySpeed, color));//sends the current drone to the drone arraylist
+	      simFrame.drones.add(new drone(startingx, startingy, size, color));//sends the current drone to the drone arraylist (0 for most things as they get made during moveDrone)
 	      simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
 	    }//end drone creation loop
+	    
 	    simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
 
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
@@ -209,19 +191,11 @@ class drone {  //drone class for tracking/moving/etc drones
 		int x;
 		int y;
 		int size;
-		int xDirection;
-		int yDirection;
-		int xSpeed;
-		int ySpeed;
 		Color color;
-	public drone(int x, int y, int size, int xDirection, int yDirection, int xSpeed, int ySpeed, Color color) {//drone constructor
+	public drone(int x, int y, int size, Color color) {//drone constructor
 		this.x = x;
 	    this.y = y;
 	    this.size = size;
-	    this.xDirection = xDirection;
-	    this.yDirection = yDirection;
-	    this.xSpeed = xSpeed;
-	    this.ySpeed = ySpeed;
 	    this.color = color;
 	}//end constructor
 	//Methods for drone class
@@ -239,18 +213,6 @@ class drone {  //drone class for tracking/moving/etc drones
 	}
 	public int getSize() {
 		return size;
-	}
-	public int getxSpeed() {
-		return xSpeed;
-	}
-	public void setxSpeed(int xSpeed) {
-		this.xSpeed = xSpeed;
-	}
-	public int getySpeed() {
-		return ySpeed;
-	}
-	public void setySpeed(int ySpeed) {
-		this.ySpeed = ySpeed;
 	}
 	}//drone class end
 	
