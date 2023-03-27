@@ -1,12 +1,17 @@
-  import java.awt.Color;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,9 +34,9 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 50;
+	  public static int numDrones = 40;
 	  //starting positions
-	  public static int startingx = 900, startingy = 500;
+	  public static int startingx = (int)(1920/2.5), startingy = (int)(1080/2.5);
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
 	  //drone size
 	  public static int dronesize = 30;
@@ -42,20 +47,21 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
   //target variables
-	  public static int targetX = 600, targetY = 420, targetSize = 20;
+	  public static int targetX = 200, targetY = 150, targetSize = 20;
   
 //BEGIN FUNCTIONS
 	  public static int getRandom(int max) {	  //Returns a random number between 0 and the input
 		  return (int) (Math.random()*max);
 	  }
-	  
+	    
 	  public void paintComponent(Graphics g) {	  //paintComponent paints drones and targets on the screen
 		  super.paintComponent(g);
-		  for (int i = 0; i < drones.size(); i++) {//draw drones
+		  for (int i = 0; i < drones.size(); i++) {//draw drones and drone path
 			  drone cdrone = drones.get(i);
-			  drawDronePath(g, i);
+			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
 			  g.fillOval(cdrone.x, cdrone.y, cdrone.size, cdrone.size);
+//			  g.drawImage(droneImage, 50, 50, this);
 		  }//end painting drones
 		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
 			  target ctarget = targets.get(i);
@@ -113,17 +119,17 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	  }//end moveDrones
 	
 	  //main
-	  public static void main(String[] args) {
+	  public static void main(String[] args){
 		Random random = new Random();	    //allows for random variables
 	    JFrame sim = new JFrame();//makes Jframe
-	    sim.setSize(1980, 1080);//sets the JFrame's size to 1980x1080 in case the fullscreen window does not work
+	    sim.setSize(1920, 1080);//sets the JFrame's size to 1980x1080 in case the fullscreen window does not work
 	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//sets the program to close on the X button (only viable for non fullscreen)
-		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();//Graphics Environment to make fullscreen devices
-		GraphicsDevice device = graphics.getDefaultScreenDevice();//gets the default screen on the device (for multi-monitor devices)
-  	  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
+//		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();//Graphics Environment to make fullscreen devices
+//		GraphicsDevice device = graphics.getDefaultScreenDevice();//gets the default screen on the device (for multi-monitor devices)
+//  	  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
   	  	DroneFleet simFrame = new DroneFleet();//makes a new frame based on this class (DroneFleet)
 	    sim.add(simFrame);//make the frame
-	    sim.setVisible(true);
+	    sim.setVisible(true);//set the panel to be visible
 	  	//create/add the button to start the simulation and switch to that screen
 	  	JButton endButton = new JButton("Open Statistics");//create the button to go to the next screen (statistics screen)
 	  	endButton.setBounds(960-125/2,25,125,30);//set the bounds of the button to be the top middle of the sim screen

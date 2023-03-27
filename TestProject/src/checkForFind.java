@@ -25,14 +25,22 @@ public class checkForFind {
 				  		return 0;
 				  		//if probabilistic finding is turned on
 				  		} else {
-				  			//makes a random number on the exponential curve of x^10 (heavily biased towards 1)
-				  			double randomExp = Math.pow(Math.random(), 10);
+				  			//makes a random number on the log curve of -1.2log(x) (biased towards 1)
+				  			double randomNum = Math.random();
+				  			
 				  			//makes distCheck the percentage (in decimals) towards the target the drone is from the max finding Radius
-				  			double distCheck = actualdistance/droneSearchRadius;
+				  			double distCheck = 1-(actualdistance/droneSearchRadius);
+				  			double distCheckLog = -0.875 * Math.log(((distCheck*-1)+1));
+				  			distCheckLog = distCheckLog/2.302585094;
+				  			if(actualdistance<droneSearchRadius) {//debug, if the drone has a chance of find (if target is within radius) shows debug log
+//				  				System.out.println("Distance < 100, percent chance to find: " + (100*distCheck));
+				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
+				  			}
 				  			//if the Distance percentage is less than the weighted random number, it is a successful find
-				  			if(distCheck<randomExp) {
+				  			if(distCheckLog>randomNum) {
 //				  				System.out.println("actual/search: " + distCheck + ", random Exp: " + randomExp);
 //				  				System.out.println("Distance Found At: " + actualdistance);
+//				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
 				  				System.out.println("Found in: "+simCounter+" cycles.");
 						  		return 0;
 				  			}
