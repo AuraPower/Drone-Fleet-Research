@@ -15,12 +15,13 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.math.*;
 import java.net.URL;
 
-public class DroneFleet extends JPanel {//create the DroneFleet clas and have it extend javaswing JPanel
+public class DroneFleet extends JPanel {//create the DroneFleet class and have it extend java swing JPanel
   private static final long serialVersionUID = 1L;//boilerplate
  
 //public variables
@@ -30,11 +31,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
   	  static ArrayList<target> targets = new ArrayList<target>();
   //settings variables
   	  public static boolean probabilisticRadius = true;
+  	  public static boolean fullMarkerLines = false;
   //timer variables
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 40;
+	  public static int numDrones = 50;
 	  //starting positions
 	  public static int startingx = (int)(1920/2.5), startingy = (int)(1080/2.5);
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -47,7 +49,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
   //target variables
-	  public static int targetX = 200, targetY = 150, targetSize = 20;
+	  public static int targetX = 450, targetY = 300, targetSize = 20;
   
 //BEGIN FUNCTIONS
 	  public static int getRandom(int max) {	  //Returns a random number between 0 and the input
@@ -56,6 +58,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	    
 	  public void paintComponent(Graphics g) {	  //paintComponent paints drones and targets on the screen
 		  super.paintComponent(g);
+		  drawMarkers(g);//draw the mile markers & label(s)
 		  for (int i = 0; i < drones.size(); i++) {//draw drones and drone path
 			  drone cdrone = drones.get(i);
 			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
@@ -69,6 +72,26 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 			  g.fillOval(ctarget.getX(), ctarget.getY(), ctarget.getSize(), ctarget.getSize());
 		  }//end painting targets
 	  }//end paintComponent
+	  
+	  public void drawMarkers(Graphics g) {//draw the mile markers and label(s)
+		  int xspace = 100;//init the xspace variable for drawing the x lines
+		  int yspace = 100;//init the yspace variable for drawing the y lines
+		  for(int i = 0; i<14; i++) {//draw x axis mile markers
+			  if(fullMarkerLines==true) {
+				  g.drawLine(xspace, 0, xspace, 800);//draw the long x line at the current xspace
+			  }else { g.drawLine(xspace, 0, xspace, 25);}//draw the short x line at the current xspace
+			  xspace=xspace+100;//increment the xspace
+		  }
+		  for(int i = 0; i<7; i++) {//draw y axis mile markers
+			  if(fullMarkerLines==true) {
+				  g.drawLine(0, yspace, 1500, yspace);//draw the long y line at the current xspace 
+			  }else { g.drawLine(0, yspace, 25, yspace);}//draw the short y line at the current xspace
+			  yspace=yspace+100;//increment the yspace
+		  }
+		  g.drawLine(5,15,5,25);//draw legend left line
+		  g.drawLine(95, 15, 95, 25);//draw legend middle line
+		  g.drawLine(5, 20, 95, 20);//draw legend right line
+	  }//end drawMarkers
 	  
 	  private void drawDronePath(Graphics g, int droneIndex) {//drawDronePath draws the array list "dronePath" based on the points provided.
 		  //every time a drone performs the function move it records the "path" (i.e. old position and new position)
@@ -84,55 +107,57 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	  private void moveDrones() {	  //move moves every drone at the same time (1 call = every drone moves)
 		  for (int i = 0; i < drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			  drone drone = drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
-	      drone.setxSpeed(getRandom(30));//sets the drone's x speed magnitude (how far left/right)
-	      drone.setySpeed(getRandom(30));//sets the drone's y speed magnitude (how far up or down)
-	      if(getRandom(1)<0.5) {//uses the random function to decide the drone's y direction (up or down)
-	    	  drone.yDirection = drone.yDirection * -1;
-	      }
-	      if(getRandom(1)<0.5) {//uses the random function to decide the drone's x direction (left or right)
-	    	  drone.xDirection = drone.xDirection * -1;
-	      }
-	      //new position calculations
-	      if((drone.xSpeed * drone.xDirection) + drone.x + drone.size>= getWidth()) {
-	    	  drone.x = drone.x + (-1 * drone.xSpeed);
-	      } else {
-	    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
-	      }
-	      if((drone.xSpeed * drone.xDirection) + drone.x - 10 <= 0) {
-	    	  drone.x = drone.x + (1 * drone.xSpeed);
-	      } else {
-	    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
-	      }
-	      if((drone.ySpeed * drone.yDirection) + drone.y + drone.size>= getHeight()) {
-	    	  drone.y = drone.y + (-1 * drone.ySpeed);
-	      } else {
-	    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
-	      }
-	      if((drone.ySpeed * drone.yDirection) + drone.y - 10 <= 0) {
-	    	  drone.y = drone.y + (1 * drone.ySpeed);
-	      } else {
-	    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
-	      }
-	      dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
-	    }//end specific drone for loop
-	    repaint();//repaints the screen with the new drones' location
+			  drone.setxSpeed(getRandom(10));//sets the drone's x speed magnitude (how far left/right)
+			  drone.setySpeed(getRandom(10));//sets the drone's y speed magnitude (how far up or down)
+		      if(getRandom(1)<0.5) {//uses the random function to decide the drone's y direction (up or down)
+		    	  drone.yDirection = drone.yDirection * -1;
+		      }
+		      if(getRandom(1)<0.5) {//uses the random function to decide the drone's x direction (left or right)
+		    	  drone.xDirection = drone.xDirection * -1;
+		      }
+		      //new position calculations
+		      if((drone.xSpeed * drone.xDirection) + drone.x + drone.size>= getWidth()) {
+		    	  drone.x = drone.x + (-1 * drone.xSpeed);
+		      } else {
+		    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
+		      }
+		      if((drone.xSpeed * drone.xDirection) + drone.x - 10 <= 0) {
+		    	  drone.x = drone.x + (1 * drone.xSpeed);
+		      } else {
+		    	  drone.x = drone.x + (drone.xDirection * drone.xSpeed);
+		      }
+		      if((drone.ySpeed * drone.yDirection) + drone.y + drone.size>= getHeight()) {
+		    	  drone.y = drone.y + (-1 * drone.ySpeed);
+		      } else {
+		    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
+		      }
+		      if((drone.ySpeed * drone.yDirection) + drone.y - 10 <= 0) {
+		    	  drone.y = drone.y + (1 * drone.ySpeed);
+		      } else {
+		    	  drone.y = drone.y + (drone.yDirection * drone.ySpeed);
+		      }
+		      dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
+	      }//end specific drone for loop
+	      repaint();//repaints the screen with the new drones' location
 	  }//end moveDrones
 	
 	  //main
 	  public static void main(String[] args){
-		Random random = new Random();	    //allows for random variables
+		Random random = new Random();//allows for random variables
 	    JFrame sim = new JFrame();//makes Jframe
-	    sim.setSize(1920, 1080);//sets the JFrame's size to 1980x1080 in case the fullscreen window does not work
+	    sim.setSize(1514, 838);//sets the JFrame's size to 1980x1080 in case the fullscreen window does not work
 	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//sets the program to close on the X button (only viable for non fullscreen)
 //		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();//Graphics Environment to make fullscreen devices
 //		GraphicsDevice device = graphics.getDefaultScreenDevice();//gets the default screen on the device (for multi-monitor devices)
-//  	  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
+//  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
   	  	DroneFleet simFrame = new DroneFleet();//makes a new frame based on this class (DroneFleet)
 	    sim.add(simFrame);//make the frame
 	    sim.setVisible(true);//set the panel to be visible
 	  	//create/add the button to start the simulation and switch to that screen
 	  	JButton endButton = new JButton("Open Statistics");//create the button to go to the next screen (statistics screen)
-	  	endButton.setBounds(960-125/2,25,125,30);//set the bounds of the button to be the top middle of the sim screen
+	  	simFrame.setLayout(null);
+	  	sim.setLayout(null);
+	  	endButton.setBounds(800-125/2,25,125,30);//set the bounds of the button to be the top middle of the sim screen
 	  	simFrame.add(endButton);//adds the button to the sim frame
 	  	endButton.setVisible(false);//sets the button to not be visible (becomes visible after sim has finished)
 	  	endButton.addActionListener(new ActionListener() {//endButton "press" function
@@ -142,13 +167,16 @@ public class DroneFleet extends JPanel {//create the DroneFleet clas and have it
 	  			Statistics.main(null);//run the statistics class
 	  		}
 	  	});
-	    
+	  	JLabel tickLabel = new JLabel("1 mile");
+	  	tickLabel.setBounds(30, 25, 80, 20);
+	  	simFrame.add(tickLabel);
+	  	
 	    for (int i = 0; i < numDrones; i++) {//drone creation for loop
 	    	int size = dronesize;//sets each drone's size to the global size
-	    	int xDirection;//initiliazes xDirection (have to init here for drones arraylist)
-	    	int yDirection;//initiliazes yDirection (have to init here for drones arraylist)
+	    	int xDirection;//initializes xDirection (have to init here for drones arraylist)
+	    	int yDirection;//initializes yDirection (have to init here for drones arraylist)
 	    	if(directionStart==1) {//random direction start condition if statement
-	    		xDirection = random.nextInt(2) * 2 - 1;//randonmizes the x direction
+	    		xDirection = random.nextInt(2) * 2 - 1;//randomizes the x direction
 	    		yDirection = random.nextInt(2) * 2 - 1;//randomizes the y direction
 	    	} else {//no direction start condition
 	    		xDirection = 0;//no x direction to start
