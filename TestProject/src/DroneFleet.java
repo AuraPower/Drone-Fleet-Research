@@ -45,11 +45,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone search radius: how far drones will start to spot targets
 	  public static int droneSearchRadius = 50;//100 is a mile radius, 50 half mile radius (for maximum search radius)
 	  //drone speed
-	  private static int droneSpeed = 10;//in pixels (100=1 mile per sim count) (10=1 mile per 10 sim count)
+	  private static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
   //sim variables
 	  //simulation speed speed
-	  public static int simspeed=20; //lower # is faster
+	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
+  	  private static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
 	  public static int targetX = 450, targetY = 300, targetSize = 20;
   
@@ -179,6 +180,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
 		  	       simCounter++;//increment the sim counter
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
+	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
+	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
 	  	    		 endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    	 }//end simflag if
 	  	     }//end listener
