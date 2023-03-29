@@ -52,7 +52,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int currentFrame = 0;
   	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
-	  public static int targetX = 450, targetY = 300, targetSize = 20;
+  	  public static boolean isTargetPosRandom = true;
+	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
   
 //BEGIN FUNCTIONS
 	    
@@ -124,12 +125,37 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	                insideArea = true;//if the new position is in the area, break out of the while loop
 	            }//end if
 			  }//end while loop
-		        drone.x = newX; //Move the object to the new x position after breaking out of the while loop
-		        drone.y = newY; //Move the object to the new y position after breaking out of the while loop
+		        drone.x = newX; //Move the drone to the new x position after breaking out of the while loop
+		        drone.y = newY; //Move the drone to the new y position after breaking out of the while loop
 		      dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 	      }//end specific drone for loop
 	      repaint();//repaints the screen with the new drones' location --- REPAINTS SCREEN EVERY TIME THE DRONES MOVE
 	  }//end moveDrones
+	  
+	  private void moveTargets() {//moves the targets 
+		  for (int i = 0; i<targets.size(); i++) {//for every target
+			  target ctarget = targets.get(i);//set the current target to the target currently being worked on
+			  boolean insideArea=false;
+			  int newX = 0;
+		      int newY = 0;
+		      
+			  while(!insideArea) {//while the target's new position is not within the screen, run this while loop
+			  	Random random = new Random();//create a new randomness "class"
+	            double direction = random.nextDouble() * 2 * Math.PI;//Generate a random direction between 0 and 2π radians
+	            int xVelocity = (int) Math.round(targetSpeed * Math.cos(direction));//Calculate the x component of the velocity based on the direction
+	            int yVelocity = (int) Math.round(targetSpeed * Math.sin(direction));//Calculate the y component of the velocity based on the direction
+	            newX = ctarget.x + xVelocity;//Calculate the new position based on the old position and the random velocity just generated
+	            newY = ctarget.y + yVelocity;//Calculate the new position based on the old position and the random velocity just generated
+	            
+	            if (newX >= 0 && newX < 1500 && newY >= 0 && newY < 800) {// Check if the new position is inside the screen
+	                insideArea = true;//if the new position is in the area, break out of the while loop
+	            }//end if
+			  }//end while loop
+		        ctarget.x = newX; //Move the target to the new x position after breaking out of the while loop
+		        ctarget.y = newY; //Move the target to the new y position after breaking out of the while loop
+		  }//end painting targets
+		  repaint();//repaints the screen with the new target's location --- REPAINTS SCREEN EVERY TIME THE TARGETS MOVE
+	  }//end targets
 	
 	  //main
 	  public static void main(String[] args){
@@ -164,12 +190,17 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	      simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
 	    }//end drone creation loop
 	    
-	    simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
-
+	    if(isTargetPosRandom) {//checks if the target position is set to random or set
+	    	simFrame.targets.add(new target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    }else {//if target position is not random
+	    	simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
+	    }
+	    
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
 	  	     public void actionPerformed(ActionEvent e) {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
 	  	  	       simFrame.moveDrones();//move all the drones
+	  	  	       simFrame.moveTargets();
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
 		  	       simCounter++;//increment the sim counter
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
