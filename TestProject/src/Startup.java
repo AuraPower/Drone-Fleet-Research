@@ -25,12 +25,10 @@ public class Startup extends JPanel {
 
 		//make the startup frame
 	    JFrame startup = new JFrame();
+	    startup.setSize(1514, 838);//sets the JFrame's size to 1514x838 for 15mix8mi plus some for edges and app header
 	    startup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    Startup startupFrame = new Startup();
-		//Graphics Environment to make fullscreen devices
-		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = graphics.getDefaultScreenDevice();
-  	  	device.setFullScreenWindow(startup);//set fullscreen using GraphicsEnvironmentDevice
+	    startupFrame.setLayout(null);//sets the JFrame to have no layout manager (automatically moves widgets for some reason)
 
 	    //make the frame
 	    startup.add(startupFrame);
@@ -40,12 +38,11 @@ public class Startup extends JPanel {
   	  	
   	  	//create/add the button to start the simulation and switch to that screen
   	  	JButton startButton = new JButton("Start Simulation");
-  	  	startButton.setBounds(960-125/2,25,125,30);
+  	  	startButton.setBounds(1514/2,25,125,30);
   	  	startupFrame.add(startButton);
   	  		startButton.addActionListener(new ActionListener() {
   	  			public void actionPerformed(ActionEvent e) {
   	  				DroneFleet.currentFrame=1;
-//  	  				TopLevelSim.dronefleetFlag=1;
   	  				System.out.println("start button pressed: " + DroneFleet.currentFrame);
   	  				startup.setVisible(false);
   	  				DroneFleet.main(args);

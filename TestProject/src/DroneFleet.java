@@ -30,7 +30,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
       ArrayList<ArrayList<Integer[]>> dronePaths = new ArrayList<ArrayList<Integer[]>>();
   	  static ArrayList<target> targets = new ArrayList<target>();
   //settings variables
-  	  public static boolean probabilisticRadius = true;
+  	  private static boolean probabilisticRadius = true;
   	  public static boolean fullMarkerLines = false;
   //timer variables
   	  public static int simFlag=1, simCounter=0;
@@ -38,26 +38,23 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  //number of drones starting on the screen
 	  public static int numDrones = 50;
 	  //starting positions
-	  public static int startingx = (int)(1920/2.5), startingy = (int)(1080/2.5);
+	  public static int startingx = (int)(1514/2), startingy = (int)(838/2);
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
 	  //drone size
 	  public static int dronesize = 30;
 	  //drone search radius: how far drones will start to spot targets
 	  public static int droneSearchRadius = 50;//100 is a mile radius, 50 half mile radius (for maximum search radius)
 	  //drone speed
-	  private static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
+	  public static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
   //sim variables
 	  //simulation speed speed
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
-  	  private static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
+  	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
 	  public static int targetX = 450, targetY = 300, targetSize = 20;
   
 //BEGIN FUNCTIONS
-	  public static int getRandom(int max) {	  //Returns a random number between 0 and the input
-		  return (int) (Math.random()*max);
-	  }
 	    
 	  public void paintComponent(Graphics g) {	  //paintComponent paints drones and targets on the screen
 		  super.paintComponent(g);
@@ -131,18 +128,14 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		        drone.y = newY; //Move the object to the new y position after breaking out of the while loop
 		      dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 	      }//end specific drone for loop
-	      repaint();//repaints the screen with the new drones' location
+	      repaint();//repaints the screen with the new drones' location --- REPAINTS SCREEN EVERY TIME THE DRONES MOVE
 	  }//end moveDrones
 	
 	  //main
 	  public static void main(String[] args){
-		Random random = new Random();//allows for random variables
 	    JFrame sim = new JFrame();//makes Jframe
-	    sim.setSize(1514, 838);//sets the JFrame's size to 1980x1080 in case the fullscreen window does not work
+	    sim.setSize(1514, 838);//sets the JFrame's size to 1514x838 for 15mix8mi plus some for edges and app header
 	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//sets the program to close on the X button (only viable for non fullscreen)
-//		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();//Graphics Environment to make fullscreen devices
-//		GraphicsDevice device = graphics.getDefaultScreenDevice();//gets the default screen on the device (for multi-monitor devices)
-//  	device.setFullScreenWindow(sim);//set fullscreen using GraphicsEnvironmentDevice
   	  	DroneFleet simFrame = new DroneFleet();//makes a new frame based on this class (DroneFleet)
 	    sim.add(simFrame);//make the frame
 	    sim.setVisible(true);//set the panel to be visible
@@ -181,7 +174,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		  	       simCounter++;//increment the sim counter
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
-	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
+//	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
 	  	    		 endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    	 }//end simflag if
 	  	     }//end listener

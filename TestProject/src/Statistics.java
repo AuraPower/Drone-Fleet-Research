@@ -17,27 +17,27 @@ public class Statistics extends JPanel {
 	  private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
-		//Graphics Environment to make fullscreen devices
-		GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = graphics.getDefaultScreenDevice();
 		//make the statistics frame
 	    JFrame statistics = new JFrame();
-	    statistics.setSize(1980, 1080);
+	    statistics.setSize(1514, 838);
 	    statistics.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    Statistics statisticsFrame = new Statistics();
 	    statisticsFrame.setLayout(null);
 	    //make the frame
 	    statistics.add(statisticsFrame);
   	  	statistics.setVisible(true);
-  	  	device.setFullScreenWindow(statistics);//set fullscreen using GraphicsEnvironmentDevice
   	  	
-  	  	JLabel timeToFind = new JLabel("Total time to find target: " + (DroneFleet.simCounter-1)) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
-  	  	statisticsFrame.add(timeToFind);
-  	  	timeToFind.setBounds(960-200/2,540,200,30);
+  	  	JLabel TimeToFind = new JLabel("Hours to find: "+ DroneFleet.simCounter/DroneFleet.simCountPerHour) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
+  	  	statisticsFrame.add(TimeToFind);
+  	  	TimeToFind.setBounds((1514-200)/2,540,200,30);
+  	  	
+  	  	JLabel DroneSpeed = new JLabel("Drone MPH: " + DroneFleet.droneSpeed*(DroneFleet.simCountPerHour/100)) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
+	  	statisticsFrame.add(DroneSpeed);
+	  	DroneSpeed.setBounds((1514-200)/2,650,200,30);
   	  	
   	  	//create/add the button to start the simulation and switch to that screen
 	  	JButton terminateButton = new JButton("Close Program");
-	  	terminateButton.setBounds(960-125/2,25,125,30);//sets the position/size of the terminateButton
+	  	terminateButton.setBounds((1514-125)/2,25,125,30);//sets the position/size of the terminateButton
 	  	statisticsFrame.add(terminateButton);
 		  	terminateButton.setVisible(true);
 		  		//endButton "press" finder
