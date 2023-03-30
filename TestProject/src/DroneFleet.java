@@ -146,8 +146,15 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
 	  	     public void actionPerformed(ActionEvent e) {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
-	  	  	       Movement.moveDronesRandom();//moves all the drones
-	  	  	       Movement.moveTargets();//moves all the targets
+	  	    	   if(Startup.droneSelectedOption == "Random") {
+	  	    		   Movement.moveDronesRandom();//moves all the drones
+	  	    	   }else if (Startup.droneSelectedOption == "Grid") {
+	  	    		   Movement.moveDronesGrid();
+	  	    	   }else {
+	  	    		   System.out.println("Error code 1: Movement Function Incorrectly Selected");
+	  	    	   }
+	  	  	       
+	  	  	       Movement.moveTargetsRandom();//moves all the targets
 	  	  	       simFrame.repaint();//repaints the screen with the new target's location --- REPAINTS SCREEN EVERY TIME THE TARGETS MOVE
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
 		  	       simCounter++;//increment the sim counter

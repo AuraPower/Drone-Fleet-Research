@@ -2,6 +2,19 @@ import java.util.Random;
 
 public class Movement {
 //drone movement
+	//DRONE MOVEMENT FUNCTION TEMPLATE:
+	//X drone movement
+//		public static void moveDronesX() {	  //moves drones like X
+//			  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+//				  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+//				  
+//				  //write movement here
+//				  
+//			     DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
+//		      }//end specific drone for loop
+//		  }//end moveDronesX
+	//END DRONE MOVEMENT FUNCTION TEMPLATE
+		
 	//random drone movement
 	public static void moveDronesRandom() {	  //move moves every drone at the same time (1 call = every drone moves)
 		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
@@ -29,8 +42,20 @@ public class Movement {
 	      }//end specific drone for loop
 	  }//end moveDronesRandom
 	
-//target movement
-	public static void moveTargets() {//moves the targets 
+	//grid drone movement
+	public static void moveDronesGrid() {	  //maps the # of drones to a grid, has them search that grid
+		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			  
+			  
+			  
+		     DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
+	      }//end specific drone for loop
+	  }//end moveDronesGrid
+	
+//target movement -----
+	//random target movement
+	public static void moveTargetsRandom() {//moves the targets 
 		  for (int i = 0; i<DroneFleet.targets.size(); i++) {//for every target
 			  target ctarget = DroneFleet.targets.get(i);//set the current target to the target currently being worked on
 			  boolean insideArea=false;
@@ -47,12 +72,12 @@ public class Movement {
 	            
 	            if (newX >= 0 && newX < 1500 && newY >= 0 && newY < 800) {// Check if the new position is inside the screen
 	                insideArea = true;//if the new position is in the area, break out of the while loop
-	            }//end if
+	            }//end checking for new pos inside area
 			  }//end while loop
 		        ctarget.x = newX; //Move the target to the new x position after breaking out of the while loop
 		        ctarget.y = newY; //Move the target to the new y position after breaking out of the while loop
-		  }//end painting targets
+		  }//end target for loop
 		  
-	  }//end targets
+	  }//end target movement
 	
 }
