@@ -29,9 +29,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
       static ArrayList<drone> drones = new ArrayList<drone>();
       static ArrayList<ArrayList<Integer[]>> dronePaths = new ArrayList<ArrayList<Integer[]>>();
   	  static ArrayList<target> targets = new ArrayList<target>();
+  	  static ArrayList<int[]> gridSearchCoordinateList = new ArrayList<int[]>();
   //settings variables
   	  private static boolean probabilisticRadius = true;
   	  public static boolean fullMarkerLines = false;
+  	  public static int screenX = 1500;//screen X size (width) variable
+  	  public static int screenY = 800;//screen Y size (height) variable
   //timer variables
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
@@ -76,15 +79,15 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  public void drawMarkers(Graphics g) {//draw the mile markers and label(s)
 		  int xspace = 100;//init the xspace variable for drawing the x lines
 		  int yspace = 100;//init the yspace variable for drawing the y lines
-		  for(int i = 0; i<14; i++) {//draw x axis mile markers
+		  for(int i = 0; i<(screenX/100 - 1); i++) {//draw x axis mile markers
 			  if(fullMarkerLines==true) {
-				  g.drawLine(xspace, 0, xspace, 800);//draw the long x line at the current xspace
+				  g.drawLine(xspace, 0, xspace, screenY);//draw the long x line at the current xspace
 			  }else { g.drawLine(xspace, 0, xspace, 25);}//draw the short x line at the current xspace
 			  xspace=xspace+100;//increment the xspace
 		  }
-		  for(int i = 0; i<7; i++) {//draw y axis mile markers
+		  for(int i = 0; i<(screenY/100 - 1); i++) {//draw y axis mile markers
 			  if(fullMarkerLines==true) {
-				  g.drawLine(0, yspace, 1500, yspace);//draw the long y line at the current xspace 
+				  g.drawLine(0, yspace, screenX, yspace);//draw the long y line at the current xspace 
 			  }else { g.drawLine(0, yspace, 25, yspace);}//draw the short y line at the current xspace
 			  yspace=yspace+100;//increment the yspace
 		  }
