@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Movement {
@@ -43,12 +44,61 @@ public class Movement {
 	  }//end moveDronesRandom
 	
 	//grid drone movement
+	public static int[] gridPair(int num, int ratioWidth, int ratioHeight) {//this function finds the number of rows and columns based on numDrones and the aspect ratio of the screen
+	    int[] pair = new int[2];//create an array for storing the numRows and numColumns
+	    double targetRatio = (double)ratioWidth / ratioHeight;//create the target ratio (get close to here) for the multiples to try to achieve
+	    double closestRatio = Double.MAX_VALUE;//create a value for the current closest ratio to the target ratio
+	    for (int i = 1; i <= num; i++) {//run through every combination of multiples and find the closest to the aspect ratio
+	        if (num % i == 0) {//checks if the number divided by the current multiple test number is 0
+	            int j = num / i;//sets j to the number divided by the current multiple to find the other multiple
+	            double currentRatio = (double) i / j;//find the aspect ratio of the current set of multiples
+	            if (Math.abs(currentRatio - targetRatio) < Math.abs(closestRatio - targetRatio)) {//check if the current multiples are closer to the target ratio than the closest so far
+	                closestRatio = currentRatio;//set the closest ratio to be the current ratio
+	                pair[0] = i;//set the number of rows to the 0th position
+	                pair[1] = j;//set the number of columns to the 1st position
+	            }//end new closest ratio checker
+	        }//end checking through every multiple 
+	    }//end checking through every number
+	    return pair;//return the number of rows/columns in the int array they are stored in
+	}//end gridPair function
+	
+	public static ArrayList<int[]> divideScreenIntoGrid(int width, int height, int numDrones){//divides the area into a grid
+		ArrayList<int[]> coordinates = new ArrayList<>();//create a new arraylist of "coordinates"
+		int[] gridPair = new int[2];//create a new int array for the number of rows/columns
+		gridPair = gridPair(DroneFleet.numDrones, DroneFleet.screenY, DroneFleet.screenX);//find the number of rows/columns with the gridPair function
+        int rows = gridPair[0];//sets "rows" to the 0th position of gridPairs
+        int cols = gridPair[1];//sets "columns" to the 1st position of gridPairs
+        int cellWidth = width / cols;//find the cellWidth by dividing the screen width by the number of columns
+        int cellHeight = height / rows;//find the cellHeight by dividing the screen height by the number of rows
+        int offsetX = (width - cellWidth * cols) / 2;//find the X offset (center) of the boxes by math
+        int offsetY = (height - cellHeight * rows) / 2;//find the Y offest (center of the boxes by math
+        //for every box:
+        for (int i = 0; i < rows; i++) {//for every row
+            for (int j = 0; j < cols; j++) {//for every column
+                int x = offsetX + j * cellWidth + cellWidth / 2;//find the center x coordinate of every box using math
+                int y = offsetY + i * cellHeight + cellHeight / 2;//find the center y coordinate of every box using math
+                int[] coordinate = {x, y};//make a coordinate int array with the previously found center coordinates
+                coordinates.add(coordinate);//add the coordinate int array to the coordinates arraylist
+            }//end every column
+        }//end every row
+        return coordinates;//return the arraylist of int arrays of center coordinates for each box
+	}//end divideScreenIntoGrid function
+	
 	public static void moveDronesGrid() {	  //maps the # of drones to a grid, has them search that grid
+		ArrayList<int[]> coordinates = new ArrayList<>();
+		coordinates = divideScreenIntoGrid(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones);
 		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
-			  
-			  
-			  
+			  	int[] coordinate = coordinates.get(i);//set the int array coordinate to the current drone's center box coordinates from the arraylist coordinates
+		        int droneX = drone.getX();//get the current done's X position
+		        int droneY = drone.getY();//get the current drone's Y position
+		        int coordX = coordinate[0];//set the coordX variable to the previously found drone's box's center X location
+		        int coordY = coordinate[1];//set the coordY variable to the previously found drone's box's center Y location
+		        double angle = Math.atan2(coordY - droneY, coordX - droneX);//finds the angle neccessary to go towards the center location
+		        double dx = DroneFleet.droneSpeed * Math.cos(angle);//finds the movement change needed in the X direction
+		        double dy = DroneFleet.droneSpeed * Math.sin(angle);//finds the movement change needed in the Y direction
+		        drone.x = (droneX + (int)dx);//move the drone's X in the direction of it's box's center X coordinate
+		        drone.y = (droneY + (int)dy);//move the drone's Y in the direction of it's box's center Y coordinate
 		     DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 	      }//end specific drone for loop
 	  }//end moveDronesGrid

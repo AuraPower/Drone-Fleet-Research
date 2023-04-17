@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 50;
+	  public static int numDrones = 120;
 	  //starting positions
 	  public static int startingx = (int)(1514/2), startingy = (int)(838/2);
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
