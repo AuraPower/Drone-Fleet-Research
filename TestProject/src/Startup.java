@@ -58,27 +58,47 @@ public class Startup extends JPanel {
         screenYFormatter.setMaximum(DroneFleet.screenY);
         JFormattedTextField startPosDronesYInput = new JFormattedTextField(screenYFormatter);
         startPosDronesYInput.setValue(0);
-        startPosDronesYInput.setBounds(100,150,200,30);
+        startPosDronesYInput.setBounds(100,130,230,30);
         startupFrame.add(startPosDronesYInput);
-        startPosDronesYInput.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-               // Get the current value of the text field
-               Object value = startPosDronesYInput.getValue();
-
-               // Check if the value is within the bounds
-               if (value instanceof Integer) {
-                  int intValue = (Integer) value;
-                  if (intValue < 0 || intValue > DroneFleet.screenY) {
-                     // Value is outside the bounds, display error message and return focus to text field
-                     JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenY);
-                     startPosDronesYInput.requestFocus();
-                  }
-               }
-            }
-         });
+//        startPosDronesYInput.addFocusListener(new FocusAdapter() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//               // Get the current value of the text field
+//               Object valueY = startPosDronesYInput.getValue();
+//
+//               // Check if the value is within the bounds
+//               if (valueY instanceof Integer) {
+//                  int intValue = (Integer) valueY;
+//                  if (intValue < 0 || intValue > DroneFleet.screenY) {
+//                     // Value is outside the bounds, display error message and return focus to text field
+//                     JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenY);
+//                     startPosDronesYInput.requestFocus();
+//                  }else {
+//                	  DroneFleet.startingy = (int) startPosDronesYInput.getValue();
+//                  }
+//                	  
+//               }
+//            }
+//         });
+        
+        JLabel YInputText = new JLabel("Input Drone Starting Y Position (0 - "+ DroneFleet.screenY + ") ");
+        YInputText.setBounds(100,100,300,30);
+        startupFrame.add(YInputText);
+        
         //create the X Input for the starting position of the drones
+        NumberFormat screenXFormat = NumberFormat.getIntegerInstance();
+        NumberFormatter screenXFormatter = new NumberFormatter(screenXFormat);
+        screenXFormatter.setMinimum(0);
+        screenXFormatter.setMaximum(DroneFleet.screenX);
+        JFormattedTextField startPosDronesXInput = new JFormattedTextField(screenXFormatter);
+        startPosDronesXInput.setValue(0);
+        startPosDronesXInput.setBounds(100,230,230,30);
+        startupFrame.add(startPosDronesXInput);
 
+        JLabel XInputText = new JLabel("Input Drone Starting X Position (0 - "+ DroneFleet.screenX + ") ");
+        XInputText.setBounds(100,200,300,30);
+        startupFrame.add(XInputText);
+        
         //create/add the button to start the simulation and switch to that screen
         JButton startButton = new JButton("Start Simulation");
         startButton.setBounds((1514/2)-125/2, 25, 125, 30);
@@ -91,6 +111,40 @@ public class Startup extends JPanel {
                 DroneFleet.main(args);
             }
         });
+        startButton.addActionListener(new ActionListener() {
+     	   @Override
+     	   public void actionPerformed(ActionEvent e) {
+     	      // Get the current value of the text field
+     	      Object valueX = startPosDronesXInput.getValue();
+     	      // Check if the value is within the bounds
+     	      if (valueX instanceof Integer) {
+     	         int intXValue = (Integer) valueX;
+     	         if (intXValue < 0 || intXValue > DroneFleet.screenX) {
+     	            // Value is outside the bounds, display error message
+     	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenX);
+     	         } else {
+     	            DroneFleet.startingx = intXValue;
+     	         }
+     	      }
+     	   }
+     	});
+        startButton.addActionListener(new ActionListener() {
+      	   @Override
+      	   public void actionPerformed(ActionEvent e) {
+      	      // Get the current value of the text field
+      	      Object valueY = startPosDronesYInput.getValue();
+      	      // Check if the value is within the bounds
+      	      if (valueY instanceof Integer) {
+      	         int intYValue = (Integer) valueY;
+      	         if (intYValue < 0 || intYValue > DroneFleet.screenY) {
+      	            // Value is outside the bounds, display error message
+      	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenY);
+      	         } else {
+      	            DroneFleet.startingy = intYValue;
+      	         }
+      	      }
+      	   }
+      	});
 
         startup.add(startupFrame);
         if (DroneFleet.currentFrame == 0) {
