@@ -149,9 +149,9 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
 	  	     public void actionPerformed(ActionEvent e) {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
-	  	    	   if(Startup.droneSelectedOption == "Random") {
+	  	    	   if(Startup.droneMovementSelectedOption == "Random") {
 	  	    		   Movement.moveDronesRandom();//moves all the drones
-	  	    	   }else if (Startup.droneSelectedOption == "Grid") {
+	  	    	   }else if (Startup.droneMovementSelectedOption == "Grid") {
 	  	    		   Movement.moveDronesGrid();
 	  	    	   }else {
 	  	    		   System.out.println("Error code 1: Movement Function Incorrectly Selected");
