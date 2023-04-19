@@ -60,26 +60,6 @@ public class Startup extends JPanel {
         startPosDronesYInput.setValue(0);
         startPosDronesYInput.setBounds(100,130,230,30);
         startupFrame.add(startPosDronesYInput);
-//        startPosDronesYInput.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//               // Get the current value of the text field
-//               Object valueY = startPosDronesYInput.getValue();
-//
-//               // Check if the value is within the bounds
-//               if (valueY instanceof Integer) {
-//                  int intValue = (Integer) valueY;
-//                  if (intValue < 0 || intValue > DroneFleet.screenY) {
-//                     // Value is outside the bounds, display error message and return focus to text field
-//                     JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenY);
-//                     startPosDronesYInput.requestFocus();
-//                  }else {
-//                	  DroneFleet.startingy = (int) startPosDronesYInput.getValue();
-//                  }
-//                	  
-//               }
-//            }
-//         });
         
         JLabel YInputText = new JLabel("Input Drone Starting Y Position (0 - "+ DroneFleet.screenY + ") ");
         YInputText.setBounds(100,100,300,30);
