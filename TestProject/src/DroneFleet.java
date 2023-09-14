@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 120;
+	  public static int numDrones = 50;
 	  //starting positions
 	  public static int startingx = (int)(1514/2), startingy = (int)(838/2);
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -56,7 +56,14 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   //target variables
   	  public static boolean isTargetPosRandom = true;
 	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
-  
+  //pictures
+	  BufferedImage droneImg = null;{
+		  try {
+		      droneImg = ImageIO.read(new File("drone.png"));
+		  } catch (IOException e) {
+			  
+		  }
+	  }
 //BEGIN FUNCTIONS
 	    
 	  public void paintComponent(Graphics g) {	  //paintComponent paints drones and targets on the screen
@@ -66,8 +73,9 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 			  drone cdrone = drones.get(i);
 			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
-			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size);
-//			  g.drawImage(droneImage, 50, 50, this);
+//			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size);
+			  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
+//				g.drawImage(droneImg, 50, 50, null);
 		  }//end painting drones
 		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
 			  target ctarget = targets.get(i);

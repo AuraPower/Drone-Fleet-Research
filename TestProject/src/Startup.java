@@ -128,7 +128,7 @@ public class Startup extends JPanel {
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DroneFleet.currentFrame = 1;
-                System.out.println("start button pressed: " + DroneFleet.currentFrame);
+//                System.out.println("start button pressed: " + DroneFleet.currentFrame);
                 startup.setVisible(false);
                 DroneFleet.main(args);
             }
