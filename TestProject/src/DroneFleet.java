@@ -56,7 +56,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   //target variables
   	  public static boolean isTargetPosRandom = true;
 	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
-  //pictures
+  //other
 	  BufferedImage droneImg = null;{
 		  try {
 		      droneImg = ImageIO.read(new File("drone.png"));
@@ -73,9 +73,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 			  drone cdrone = drones.get(i);
 			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
-//			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size);
+//			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //outdated drone picture
 			  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
-//				g.drawImage(droneImg, 50, 50, null);
 		  }//end painting drones
 		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
 			  target ctarget = targets.get(i);
@@ -185,11 +184,13 @@ class drone {  //drone class for tracking/moving/etc drones
 		int y;
 		int size;
 		Color color;
+		boolean faulted;
 	public drone(int x, int y, int size, Color color) {//drone constructor
 		this.x = x;
 	    this.y = y;
 	    this.size = size;
 	    this.color = color;
+	    this.faulted = false; //starts all drones on construction as not faulted
 	}//end constructor
 	//Methods for drone class
 	public Color getColor() {
