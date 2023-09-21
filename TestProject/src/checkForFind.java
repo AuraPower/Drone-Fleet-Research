@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 public class checkForFind {
 
+	public static int numFalseNegatives = 0;//counter for succesful finds made by faulted drones	
+	
 	//Returns a random number between 0 and the input
 	public static int getRandom(int max) {
 		return (int) (Math.random()*max);
@@ -18,7 +20,7 @@ public class checkForFind {
 				  int ydistance = Math.abs(cdrone.getY() - ctarget.getY());
 				  double actualdistance = Math.sqrt( (Math.pow(xdistance, 2)) + (Math.pow(ydistance,  2)) );
 				  //if the distances between the current drone and current targets X/Y are less than the search radius, stops simulation and outputs found statement
-				  if((actualdistance < droneSearchRadius )) {
+				  if( (actualdistance < droneSearchRadius) ) {
 					    //if probabilistic finding is turned off
 				  		if(probabilisticRadius==false) {
 					  	System.out.println("Found in: "+simCounter+" cycles.");
@@ -36,13 +38,16 @@ public class checkForFind {
 //				  				System.out.println("Distance < 100, percent chance to find: " + (100*distCheck));
 				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
 				  			}
-				  			//if the Distance percentage is less than the weighted random number, it is a successful find
-				  			if(distCheckLog>randomNum) {
+				  			//if the Distance percentage is less than the weighted random number, and its not a faulted drone, it is a successful find
+				  			if((distCheckLog>randomNum) && (cdrone.isFaulted()!=true)) {
 //				  				System.out.println("actual/search: " + distCheck + ", random Exp: " + randomExp);
 //				  				System.out.println("Distance Found At: " + actualdistance);
 //				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
 				  				System.out.println("Found in: "+simCounter+" cycles.");
 						  		return 0;
+				  			} else if ((distCheckLog>randomNum) && (cdrone.isFaulted()!=false)){ //sucessful find, but drone is faulted
+				  				numFalseNegatives = numFalseNegatives + 1;
+				  				System.out.println("Successful find, but drone was faulted, total false negatives: " + numFalseNegatives);
 				  			}
 				  			
 				  			
@@ -51,7 +56,7 @@ public class checkForFind {
 				  		
 				  		
 				  		
-				  	} 
+				  	}
 				  
 			  }
 			  	

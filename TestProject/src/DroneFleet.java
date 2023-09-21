@@ -49,6 +49,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  public static int droneSearchRadius = 50;//100 is a mile radius, 50 half mile radius (for maximum search radius)
 	  //drone speed
 	  public static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
+	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being all)
+	  public static double droneFaultRatio = 0.2;
   //sim variables
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
@@ -59,7 +61,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   //other
 	  BufferedImage droneImg = null;{
 		  try {
-		      droneImg = ImageIO.read(new File("drone.png"));
+		      droneImg = ImageIO.read(new File("drone.png")); //image for drones
 		  } catch (IOException e) {
 			  
 		  }
@@ -73,8 +75,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 			  drone cdrone = drones.get(i);
 			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
-//			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //outdated drone picture
-			  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
+			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //outdated drone picture
+//			  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
 		  }//end painting drones
 		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
 			  target ctarget = targets.get(i);
@@ -141,10 +143,19 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	simFrame.add(tickLabel);
 	  	
 	    for (int i = 0; i < numDrones; i++) {//drone creation for loop
-	    	int size = dronesize;//sets each drone's size to the global size
-	      Color color = Color.black;//makes the drone's color be black (for drawing the component to the screen)
-	      simFrame.drones.add(new drone(startingx, startingy, size, color));//sends the current drone to the drone arraylist (0 for most things as they get made during moveDrone)
-	      simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
+		    //Randomly faults drones based on fault probability input
+	    	boolean faulted = false;
+		    double currentFaultChance = Math.random();
+		    if(currentFaultChance < droneFaultRatio) {
+		    	faulted = true;
+		    }
+		    int size = dronesize;//sets each drone's size to the global size
+		    Color color = Color.black;//makes the drone's color be black (for drawing the component to the screen)
+		    if(faulted) {
+		    	color = Color.gray;//makes faulted drones gray instead of black
+		    }
+		    simFrame.drones.add(new drone(startingx, startingy, size, color, faulted));//sends the current drone to the drone arraylist (0 for most things as they get made during moveDrone)
+		    simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
 	    }//end drone creation loop
 	    
 	    if(isTargetPosRandom) {//checks if the target position is set to random or set
@@ -185,13 +196,19 @@ class drone {  //drone class for tracking/moving/etc drones
 		int size;
 		Color color;
 		boolean faulted;
-	public drone(int x, int y, int size, Color color) {//drone constructor
+	public drone(int x, int y, int size, Color color, boolean faulted) {//drone constructor
 		this.x = x;
 	    this.y = y;
 	    this.size = size;
 	    this.color = color;
-	    this.faulted = false; //starts all drones on construction as not faulted
+	    this.faulted = faulted; //starts all drones on construction as not faulted
 	}//end constructor
+	public boolean isFaulted() {
+		return faulted;
+	}
+	public void setFaulted(boolean faulted) {
+		this.faulted = faulted;
+	}
 	//Methods for drone class
 	public Color getColor() {
 		return color;
