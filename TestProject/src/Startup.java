@@ -31,10 +31,15 @@ public class Startup extends JPanel {
     public static String markerLengthSelectedOption = "";
     
     // create an array of strings to populate our dropdown list for the position randomness
-    public static String[] droneposTypeOptions = {"Select Drone Starting Position Type", "Manual", "Center", "Random (doesn't work)"};
+    public static String[] droneposTypeOptions = {"Select Drone Starting Position Type", "Manual", "Center", "Random"};
     // create a variable to hold the selected option for the position randomness
     public static String droneposTypeSelectedOption = "";
     
+    //Returns a random number between 0 and the input
+  	public static int getRandom(int max) {
+  		return (int) (Math.random()*max);
+  	}
+  	
     //paintComponent paints all the drones in the array list "drones"	  
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -99,7 +104,7 @@ public class Startup extends JPanel {
         XInputText.setBounds(100,200,300,30);
         startupFrame.add(XInputText);
         
-        //create the combo box for drone pos selection
+        //create the combo box for drone starting position selection
         JComboBox<String> dronepostypeDropdownBox = new JComboBox<String>(droneposTypeOptions);
         dronepostypeDropdownBox.setBounds(100, 50, 230, 30);
         startupFrame.add(dronepostypeDropdownBox);
@@ -112,12 +117,22 @@ public class Startup extends JPanel {
             		XInputText.setVisible(true);
             		startPosDronesYInput.setVisible(true);
             		startPosDronesXInput.setVisible(true);
-            	}else if (droneposTypeSelectedOption == "Center" || droneposTypeSelectedOption == "Random") {
+            	}else if (droneposTypeSelectedOption == "Center") {
             		YInputText.setVisible(false);
             		XInputText.setVisible(false);
             		startPosDronesYInput.setVisible(false);
             		startPosDronesXInput.setVisible(false);
+            		DroneFleet.startingx = (int)(DroneFleet.screenX/2);
+            		DroneFleet.startingy = (int)(DroneFleet.screenY/2);
+            	}else if (droneposTypeSelectedOption == "Random") {
+            		YInputText.setVisible(false);
+            		XInputText.setVisible(false);
+            		startPosDronesYInput.setVisible(false);
+            		startPosDronesXInput.setVisible(false);
+            		DroneFleet.startingx = getRandom(DroneFleet.screenX);
+            		DroneFleet.startingx = getRandom(DroneFleet.screenY);
             	}
+            		
             }
         });
         
@@ -136,23 +151,26 @@ public class Startup extends JPanel {
         startButton.addActionListener(new ActionListener() {
      	   @Override
      	   public void actionPerformed(ActionEvent e) {
-     	      // Get the current value of the text field
-     	      Object valueX = startPosDronesXInput.getValue();
-     	      // Check if the value is within the bounds
-     	      if (valueX instanceof Integer) {
-     	         int intXValue = (Integer) valueX;
-     	         if (intXValue < 0 || intXValue > DroneFleet.screenX) {
-     	            // Value is outside the bounds, display error message
-     	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenX);
-     	         } else {
-     	            DroneFleet.startingx = intXValue;
-     	         }
-     	      }
+     		   if(droneposTypeSelectedOption == "Manual") {
+     			// Get the current value of the text field
+          	      Object valueX = startPosDronesXInput.getValue();
+          	      // Check if the value is within the bounds
+          	      if (valueX instanceof Integer) {
+          	         int intXValue = (Integer) valueX;
+          	         if (intXValue < 0 || intXValue > DroneFleet.screenX) {
+          	            // Value is outside the bounds, display error message
+          	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenX);
+          	         } else {
+          	            DroneFleet.startingx = intXValue;
+          	         }
+          	      }
+     		   }
      	   }
      	});
         startButton.addActionListener(new ActionListener() {
       	   @Override
       	   public void actionPerformed(ActionEvent e) {
+      		 if(droneposTypeSelectedOption == "Manual") {
       	      // Get the current value of the text field
       	      Object valueY = startPosDronesYInput.getValue();
       	      // Check if the value is within the bounds
@@ -165,6 +183,7 @@ public class Startup extends JPanel {
       	            DroneFleet.startingy = intYValue;
       	         }
       	      }
+      		 }
       	   }
       	});
 

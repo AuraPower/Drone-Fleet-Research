@@ -41,7 +41,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  //number of drones starting on the screen
 	  public static int numDrones = 50;
 	  //starting positions
-	  public static int startingx = (int)(1514/2), startingy = (int)(838/2);
+	  public static int startingx, startingy; // only need to initialize, set in startup
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
 	  //drone size
 	  public static int dronesize = 30;
@@ -173,6 +173,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	    		   Movement.moveDronesGrid();
 	  	    	   }else {
 	  	    		   System.out.println("Error code 1: Movement Function Incorrectly Selected");
+	  	    		   System.exit(0);
 	  	    	   }
 	  	  	       
 	  	  	       Movement.moveTargetsRandom();//moves all the targets
