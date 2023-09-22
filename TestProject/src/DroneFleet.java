@@ -75,8 +75,11 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 			  drone cdrone = drones.get(i);
 			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
-			  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //outdated drone picture
-//			  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
+			  if(Startup.debugMode) {//if the simulation is in debug mode, draw the drones as circles with differentiating colors for faulted agents
+				  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //debug mode drawing
+			  } else if (Startup.debugMode) {//if not in debug mode, draw drones as normal
+				  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
+			  }			  
 		  }//end painting drones
 		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
 			  target ctarget = targets.get(i);

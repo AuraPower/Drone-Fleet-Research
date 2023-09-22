@@ -35,6 +35,9 @@ public class Startup extends JPanel {
     // create a variable to hold the selected option for the position randomness
     public static String droneposTypeSelectedOption = "";
     
+    //variable for debug mode
+    public static boolean debugMode = false; //false is debug mode disabled, true is enabled
+    
     //Returns a random number between 0 and the input
   	public static int getRandom(int max) {
   		return (int) (Math.random()*max);
@@ -138,7 +141,7 @@ public class Startup extends JPanel {
         
         //create/add the button to start the simulation and switch to that screen
         JButton startButton = new JButton("Start Simulation");
-        startButton.setBounds((1514/2)-125/2, 25, 125, 30);
+        startButton.setBounds((DroneFleet.screenX/2)-125/2, 25, 125, 30);
         startupFrame.add(startButton);
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -148,6 +151,24 @@ public class Startup extends JPanel {
                 DroneFleet.main(args);
             }
         });
+        
+      //create/add the button to switch between debug and non-debug mode
+        JButton debugButton = new JButton("Debug");
+        debugButton.setBounds((DroneFleet.screenX)-125, DroneFleet.screenY-30, 125, 30);
+        startupFrame.add(debugButton);
+        debugButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                debugMode = !debugMode;
+                System.out.println("debug mode button pressed " + debugMode);
+                if(debugMode) {
+                	startupFrame.setBackground(Color.gray);
+                }else if (!debugMode) {
+                	startupFrame.setBackground(Color.white);
+                }
+            
+            }
+        });
+        
         startButton.addActionListener(new ActionListener() {
      	   @Override
      	   public void actionPerformed(ActionEvent e) {
