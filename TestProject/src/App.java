@@ -7,7 +7,7 @@ public class App {
 		while(true) {//start App while loop
 //			System.out.println("App Loop");
 			if(DroneFleet.currentFrame==0&&startupFlag==0) {//if the currentFrame is 0 (and its the first time)
-				System.out.println("Switching Frame to Startup");
+//				System.out.println("Switching Frame to Startup");
 				startupFlag=1;
 				Startup.main(args);
 			} //no code to run DroneFleet as that happens on "start" button press in Startup screen

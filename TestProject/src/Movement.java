@@ -59,6 +59,13 @@ public class Movement {
 	            }//end new closest ratio checker
 	        }//end checking through every multiple 
 	    }//end checking through every number
+	    
+	    if (pair[1] == num) {//If the numDrones is something unfactorable like 71 (i.e. the number of columns is numDrones)
+	    	//find the closest perfect square (multiple of 2^x) and make that many rows/columns
+	        pair[0] = (int) (Math.sqrt(num));
+	        pair[1] = (int) (Math.sqrt(num));
+	    }
+	    
 	    return pair;//return the number of rows/columns in the int array they are stored in
 	}//end gridPair function
 	
@@ -81,6 +88,14 @@ public class Movement {
                 coordinates.add(coordinate);//add the coordinate int array to the coordinates arraylist
             }//end every column
         }//end every row
+        //If there are more drones than coordinates, fill that many 0,0 coordinates
+        if(numDrones>coordinates.size()) {
+        	int numCoordFill = numDrones-coordinates.size();
+        	int[] zerocoordinate = {0,0};
+        	for(int i = 0; i < numCoordFill; i++) {
+        		coordinates.add(zerocoordinate);
+        	}
+        }
         return coordinates;//return the arraylist of int arrays of center coordinates for each box
 	}//end divideScreenIntoGrid function
 	
