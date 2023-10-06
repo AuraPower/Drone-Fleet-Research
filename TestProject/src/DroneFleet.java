@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 71;
+	  public static int numDrones = 64;
 	  //starting positions
 	  public static int startingx, startingy; // only need to initialize, set in startup
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -50,9 +50,13 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone speed
 	  public static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
 	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being all)
-	  public static double droneFaultRatio = 0.2;
+	  public static double droneFaultRatio = 0.02;
+	  //drone false positive ratio (if faulted, chance every move to generate a false positive (0.1=10% chance every time a faulted drone moves)
+	  public static double droneFalsePosChance = 0.008; 
+	  //drone false positive count
+	  public static double falsePositiveCount = 0;
   //sim variables
-	  public static int simspeed=1; //lower # is faster
+	  public static int simspeed=50; //lower # is faster
   	  public static int currentFrame = 0;
   	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
@@ -145,6 +149,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	tickLabel.setBounds(30, 25, 80, 20);
 	  	simFrame.add(tickLabel);
 	  	
+	  	int droneID = 0;
 	    for (int i = 0; i < numDrones; i++) {//drone creation for loop
 		    //Randomly faults drones based on fault probability input
 	    	boolean faulted = false;
@@ -157,7 +162,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		    if(faulted) {
 		    	color = Color.gray;//makes faulted drones gray instead of black
 		    }
-		    simFrame.drones.add(new drone(startingx, startingy, size, color, faulted));//sends the current drone to the drone arraylist (0 for most things as they get made during moveDrone)
+		    simFrame.drones.add(new drone(startingx, startingy, size, color, faulted, droneID));//sends the current drone to the drone arraylist
+		    droneID += 1; //increments the droneID counter
 		    simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
 	    }//end drone creation loop
 	    
@@ -200,12 +206,14 @@ class drone {  //drone class for tracking/moving/etc drones
 		int size;
 		Color color;
 		boolean faulted;
-	public drone(int x, int y, int size, Color color, boolean faulted) {//drone constructor
+		int droneID;
+	public drone(int x, int y, int size, Color color, boolean faulted, int droneID) {//drone constructor
 		this.x = x;
 	    this.y = y;
 	    this.size = size;
 	    this.color = color;
 	    this.faulted = faulted; //starts all drones on construction as not faulted
+	    this.droneID = droneID;
 	}//end constructor
 	public boolean isFaulted() {
 		return faulted;

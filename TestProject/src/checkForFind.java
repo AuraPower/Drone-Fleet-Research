@@ -36,7 +36,7 @@ public class checkForFind {
 				  			distCheckLog = distCheckLog/2.302585094;
 				  			if(actualdistance<droneSearchRadius) {//debug, if the drone has a chance of find (if target is within radius) shows debug log
 //				  				System.out.println("Distance < 100, percent chance to find: " + (100*distCheck));
-				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
+//				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
 				  			}
 				  			//if the Distance percentage is less than the weighted random number, and its not a faulted drone, it is a successful find
 				  			if((distCheckLog>randomNum) && (cdrone.isFaulted()!=true)) {

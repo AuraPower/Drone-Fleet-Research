@@ -2,10 +2,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Movement {
+	
+	private static ArrayList<int[]> coordinates = new ArrayList<>();
+	
 //drone movement
 	//DRONE MOVEMENT FUNCTION TEMPLATE:
 	//X drone movement
 //		public static void moveDronesX() {	  //moves drones like X
+//			falsePositiveChance(); //checks for false positives by faulted drones
 //			  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
 //				  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 //				  
@@ -15,6 +19,40 @@ public class Movement {
 //		      }//end specific drone for loop
 //		  }//end moveDronesX
 	//END DRONE MOVEMENT FUNCTION TEMPLATE
+	
+	//Returns a random number between 0 and the input
+	public static int getRandom(int max) {
+		return (int) (Math.random()*max);
+	}
+	
+	//false positive chance on move function
+	public static void falsePositiveChance() {
+		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+			  drone cdrone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			  
+			  if(cdrone.faulted == true && (Math.random()<DroneFleet.droneFalsePosChance)) { //if the current drone is faulted & a false positive is generated
+				  DroneFleet.falsePositiveCount += 1; //adds to the false positive counter
+				  System.out.println("Number of false positives:" + DroneFleet.falsePositiveCount);
+				  verifyTargetFind(cdrone);
+			  }
+			  
+		}
+	}
+	
+	//verifyTargetFind moves the closest drone to the one that "found" a target to verify its find (only works for grid search currently)
+	public static void verifyTargetFind(drone drone) {//"drone" is the one that "found" a target
+		//find the closet drone via droneID (they should always be close to each other)
+		int closestDroneID = 0;
+		if(drone.droneID!=0) {//as long as the drone isnt drone 0, find the drone before it
+			closestDroneID = drone.droneID - 1;
+		} else {//otherwise find the drone after it
+			closestDroneID = drone.droneID + 1;
+		}
+	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target 
+	  	System.out.println("Drone #" + closestDroneID + " moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
+		coordinates.set(closestDroneID, newCoordinates); //set the closest drone's target coordinates to coordinates of the drone that "found" the target
+	}
+	
 		
 	//random drone movement
 	public static void moveDronesRandom() {	  //move moves every drone at the same time (1 call = every drone moves)
@@ -69,8 +107,9 @@ public class Movement {
 	    return pair;//return the number of rows/columns in the int array they are stored in
 	}//end gridPair function
 	
-	public static ArrayList<int[]> divideScreenIntoGrid(int width, int height, int numDrones){//divides the area into a grid
-		ArrayList<int[]> coordinates = new ArrayList<>();//create a new arraylist of "coordinates"
+	public static void divideScreenIntoGrid(int width, int height, int numDrones){//divides the area into a grid
+		
+//		ArrayList<int[]> coordinates = new ArrayList<>();//create a new arraylist of "coordinates"
 		int[] gridPair = new int[2];//create a new int array for the number of rows/columns
 		gridPair = gridPair(DroneFleet.numDrones, DroneFleet.screenY, DroneFleet.screenX);//find the number of rows/columns with the gridPair function
         int rows = gridPair[0];//sets "rows" to the 0th position of gridPairs
@@ -96,12 +135,18 @@ public class Movement {
         		coordinates.add(zerocoordinate);
         	}
         }
-        return coordinates;//return the arraylist of int arrays of center coordinates for each box
+        //coordinates is a file wide variable now, no need to return anything
 	}//end divideScreenIntoGrid function
 	
 	public static void moveDronesGrid() {	  //maps the # of drones to a grid, has them search that grid
-		ArrayList<int[]> coordinates = new ArrayList<>();
-		coordinates = divideScreenIntoGrid(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones);
+		
+		boolean ODO_divideScreenIntoGrid = false; // ODO (only do once) check for dividing up the screen (we only need to divide it up once, not every time)
+		if(!ODO_divideScreenIntoGrid) {// if the ODO is false (not done yet)
+		divideScreenIntoGrid(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones); //divide the screen up into the coordinate grid
+		ODO_divideScreenIntoGrid = true;
+		}
+		
+		falsePositiveChance(); //checks for false positives by faulted drones and sends the closest drone to check if so (changes the closest drones destination)
 		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 			  	int[] coordinate = coordinates.get(i);//set the int array coordinate to the current drone's center box coordinates from the arraylist coordinates
