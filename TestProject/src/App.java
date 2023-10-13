@@ -2,7 +2,7 @@
 public class App {
 	//added flags so theres no infinite screen making (this bricks the computer)
 	public static int startupFlag=0;
-	public static int app_mode = 1; // 0 is single run mode, 1 is multi-run mode
+	public static int app_mode = 0; // 0 is single run mode, 1 is multi-run mode
 	
 	public static void main(String[] args) {
 		while(true) {//start App while loop

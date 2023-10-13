@@ -199,6 +199,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
 //	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
+	  	    		 
 	  	    		 if(runType == 0) {//if single run
 	  	    			endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    		 } else if (runType == 1) {//if multi run
