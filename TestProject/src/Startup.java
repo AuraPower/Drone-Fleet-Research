@@ -29,6 +29,7 @@ public class Startup extends JPanel {
     public static String[] markerlengthOptions = {"Select Marker Size", "Short", "Full-Screen"};
     // create a variable to hold the selected option for the marker type
     public static String markerLengthSelectedOption = "";
+    public static boolean fullMarkerLines = false;
     
     // create an array of strings to populate our dropdown list for the position randomness
     public static String[] droneposTypeOptions = {"Select Drone Starting Position Type", "Manual", "Center", "Random"};
@@ -37,6 +38,10 @@ public class Startup extends JPanel {
     
     //variable for debug mode
     public static boolean debugMode = true; //false is debug mode disabled, true is enabled
+    
+    //passthrough variables
+    public static int startingx;
+    public static int startingy;
     
     //Returns a random number between 0 and the input
   	public static int getRandom(int max) {
@@ -68,6 +73,7 @@ public class Startup extends JPanel {
             }
         });
         
+        
         //create the combo box for grid length selection
         JComboBox<String> fullgridDropdownBox = new JComboBox<String>(markerlengthOptions);
         fullgridDropdownBox.setBounds((1514/2)-150/2, (838/2)+150, 150, 30);
@@ -76,6 +82,12 @@ public class Startup extends JPanel {
         fullgridDropdownBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	markerLengthSelectedOption = (String) fullgridDropdownBox.getSelectedItem();
+            	
+            	if(markerLengthSelectedOption == "Short") {
+            		 fullMarkerLines = false;
+            	} else if(markerLengthSelectedOption == "Full-Screen") {
+            		 fullMarkerLines = true;
+            	}
             }
         });
         
@@ -125,15 +137,15 @@ public class Startup extends JPanel {
             		XInputText.setVisible(false);
             		startPosDronesYInput.setVisible(false);
             		startPosDronesXInput.setVisible(false);
-            		DroneFleet.startingx = (int)(DroneFleet.screenX/2);
-            		DroneFleet.startingy = (int)(DroneFleet.screenY/2);
+            		startingx = (int)(DroneFleet.screenX/2);
+            		startingy = (int)(DroneFleet.screenY/2);
             	}else if (droneposTypeSelectedOption == "Random") {
             		YInputText.setVisible(false);
             		XInputText.setVisible(false);
             		startPosDronesYInput.setVisible(false);
             		startPosDronesXInput.setVisible(false);
-            		DroneFleet.startingx = getRandom(DroneFleet.screenX);
-            		DroneFleet.startingx = getRandom(DroneFleet.screenY);
+            		startingx = getRandom(DroneFleet.screenX);
+            		startingy = getRandom(DroneFleet.screenY);
             	}
             		
             }
@@ -148,7 +160,7 @@ public class Startup extends JPanel {
                 DroneFleet.currentFrame = 1;
 //                System.out.println("start button pressed: " + DroneFleet.currentFrame);
                 startup.setVisible(false);
-                DroneFleet.main(args);
+                DroneFleet.main(0, fullMarkerLines, startingx, startingy, droneMovementSelectedOption, debugMode);
             }
         });
         
@@ -159,7 +171,7 @@ public class Startup extends JPanel {
         debugButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 debugMode = !debugMode;
-                System.out.println("debug mode button pressed " + debugMode);
+//                System.out.println("debug mode button pressed " + debugMode);
                 if(debugMode) {
                 	startupFrame.setBackground(Color.gray);
                 }else if (!debugMode) {
@@ -182,7 +194,7 @@ public class Startup extends JPanel {
           	            // Value is outside the bounds, display error message
           	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenX);
           	         } else {
-          	            DroneFleet.startingx = intXValue;
+          	            startingx = intXValue;
           	         }
           	      }
      		   }
@@ -201,7 +213,7 @@ public class Startup extends JPanel {
       	            // Value is outside the bounds, display error message
       	            JOptionPane.showMessageDialog(startupFrame, "Value must be between " + 0 + " and " + DroneFleet.screenY);
       	         } else {
-      	            DroneFleet.startingy = intYValue;
+      	            startingy = intYValue;
       	         }
       	      }
       		 }

@@ -124,7 +124,14 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		  }
 	
 	  //main
-	  public static void main(String[] args){
+	  public static void main(int runType, boolean fullMarkerLinesIn, int startingxIn, int startingyIn, String droneMovementSelectedOption, boolean debugMode){
+		  //variable passthrough
+		  fullMarkerLines = fullMarkerLinesIn;
+		  startingx = startingxIn;
+		  startingy = startingyIn;
+		  //runType is 0 for single, 1 for multi-run
+		  
+		  
 	    JFrame sim = new JFrame();//makes Jframe
 	    sim.setSize(1514, 838);//sets the JFrame's size to 1514x838 for 15mix8mi plus some for edges and app header
 	    sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//sets the program to close on the X button (only viable for non fullscreen)
@@ -176,9 +183,9 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
 	  	     public void actionPerformed(ActionEvent e) {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
-	  	    	   if(Startup.droneMovementSelectedOption == "Random") {
+	  	    	   if(droneMovementSelectedOption == "Random") {
 	  	    		   Movement.moveDronesRandom();//moves all the drones
-	  	    	   }else if (Startup.droneMovementSelectedOption == "Grid") {
+	  	    	   }else if (droneMovementSelectedOption == "Grid") {
 	  	    		   Movement.moveDronesGrid();
 	  	    	   }else {
 	  	    		   System.out.println("Error code 1: Movement Function Incorrectly Selected");
@@ -192,7 +199,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
 //	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
-	  	    		 endButton.setVisible(true);//shows the endButton (moves to statistics screen)
+	  	    		 if(runType == 0) {//if single run
+	  	    			endButton.setVisible(true);//shows the endButton (moves to statistics screen)
+	  	    		 } else if (runType == 1) {//if multi run
+	  	    			 
+	  	    		 }
+	  	    		 
 	  	    	 }//end simflag if
 	  	     }//end listener
 	  	});//end timer action

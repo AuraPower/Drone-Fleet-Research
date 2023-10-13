@@ -35,7 +35,7 @@ public class Movement {
 			  
 			  if(cdrone.faulted == true && (Math.random()<DroneFleet.droneFalsePosChance)) { //if the current drone is faulted & a false positive is generated
 				  DroneFleet.falsePositiveCount += 1; //adds to the false positive counter
-				  System.out.println("Number of false positives:" + DroneFleet.falsePositiveCount);
+//				  System.out.println("Number of false positives:" + DroneFleet.falsePositiveCount);
 				  verifyTargetFind(cdrone);
 			  }
 			  
@@ -54,12 +54,12 @@ public class Movement {
 		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the closest drone
 	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target 
 	  	int[] tempCoords = coordinates.get(cdrone.droneID); //get the og coordiantes of drone that is moving
-	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
+//	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
 		coordinates_fluid.set(closestDroneID, newCoordinates); //set the closest drone's target coordinates to coordinates of the drone that "found" the target
 		//find the drone that has the closestDroneID (the on thats moving to check a positive) and start the countdown at x
 		
 		cdrone.setResetCounter(50);
-		System.out.println("Drone # " +closestDroneID + "'s reset counter = " + cdrone.resetCounter);
+//		System.out.println("Drone # " +closestDroneID + "'s reset counter = " + cdrone.resetCounter);
 		
 	}
 		
@@ -185,7 +185,7 @@ public class Movement {
 		divideScreenIntoGrid(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones); //divide the screen up into the coordinate grid
 		coordinates_fluid = coordinates;//copy the grid coordinates to the changing coordinate base, coordinates_fluid
 		ODO_divideScreenIntoGrid = true;
-		System.out.println("Dividing screen");
+//		System.out.println("Dividing screen");
 		}
 		
 		falsePositiveChance(); //checks for false positives by faulted drones and sends the closest drone to check if so (changes the closest drones destination)
