@@ -23,7 +23,7 @@ import java.net.URL;
 
 public class DroneFleet extends JPanel {//create the DroneFleet class and have it extend java swing JPanel
   private static final long serialVersionUID = 1L;//boilerplate
- 
+  
 //public variables
   //array lists for the drones and drone paths
       static ArrayList<drone> drones = new ArrayList<drone>();
@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 20;
+	  public static int numDrones = 64;
 	  //starting positions
 	  public static int startingx, startingy; // only need to initialize, set in startup
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -61,7 +61,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
   	  public static boolean isTargetPosRandom = true;
-	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
+	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2; //target position (only if not random)
   //other
 	  BufferedImage droneImg = null;{
 		  try {
@@ -124,13 +124,20 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		  }
 	
 	  //main
-	  public static void main(int runType, boolean fullMarkerLinesIn, int startingxIn, int startingyIn, String droneMovementSelectedOption, boolean debugMode){
+	  public static void run(int runType, boolean fullMarkerLinesIn, int startingxIn, int startingyIn, String droneMovementSelectedOption, boolean debugMode){
 		  //variable passthrough
 		  fullMarkerLines = fullMarkerLinesIn;
 		  startingx = startingxIn;
 		  startingy = startingyIn;
 		  //runType is 0 for single, 1 for multi-run
-		  
+		  //need to reset all variables?????
+		  simFlag = 1;
+		  simCounter = 0;
+		  drones.clear();
+		  dronePaths.clear();
+		  targets.clear();
+		  falsePositiveCount = 0;
+		  currentFrame = 0;
 		  
 	    JFrame sim = new JFrame();//makes Jframe
 	    sim.setSize(1514, 838);//sets the JFrame's size to 1514x838 for 15mix8mi plus some for edges and app header
@@ -203,7 +210,8 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	    		 if(runType == 0) {//if single run
 	  	    			endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    		 } else if (runType == 1) {//if multi run
-	  	    			 
+	  	    			 sim.dispose();
+	  	    			 return;
 	  	    		 }
 	  	    		 
 	  	    	 }//end simflag if
