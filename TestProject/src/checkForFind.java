@@ -44,7 +44,11 @@ public class checkForFind {
 //				  				System.out.println("Distance Found At: " + actualdistance);
 //				  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
 				  				System.out.println("Found in: "+simCounter+" cycles.");
-				  				Startup_Multi.startNextTrialFlag = true;
+				  				
+				  				System.out.println("Trial Completed: " + Startup_Multi.numTrialsRun);
+								
+				  				
+				  				
 						  		return 0;
 				  			} else if ((distCheckLog>randomNum) && (cdrone.isFaulted()!=false)){ //sucessful find, but drone is faulted
 				  				numFalseNegatives = numFalseNegatives + 1;

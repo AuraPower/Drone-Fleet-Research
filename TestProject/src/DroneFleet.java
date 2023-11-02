@@ -182,7 +182,20 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	    }//end drone creation loop
 	    
 	    if(isTargetPosRandom) {//checks if the target position is set to random or set
-	    	simFrame.targets.add(new target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    	if(App.test_mode) {//if testing mode is on, put the target anywhere in the inside 1/9th of the screen
+	    		int newtargetX_start = (int)(Math.random()*(screenX));//generate within front 2/3s of screen
+	    		int newtargetY_start = (int)(Math.random()*(screenY));//generate within front 2/3s of screen
+	    		//if the new target's start pos is in the front 1/3 of the screen, just place on edge of 1/3
+//	    		if(newtargetX_start < screenX - (screenX*(2/3))) {
+//	    			newtargetX_start = screenX - screenX*(2/3);
+//	    		}
+//	    		if(newtargetY_start > screenY - (screenY*(2/3))) {
+//	    			newtargetY_start = screenY- screenY*(2/3);
+//	    		}
+		    	simFrame.targets.add(new target(newtargetX_start, newtargetY_start, targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    	}else {//if testing mode is not on, put the target anywhere
+		    	simFrame.targets.add(new target((int)(Math.random()*screenX), (int)(Math.random()*screenY), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    	}
 	    }else {//if target position is not random
 	    	simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
 	    }
@@ -203,14 +216,18 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	  	       simFrame.repaint();//repaints the screen with the new target's location --- REPAINTS SCREEN EVERY TIME THE TARGETS MOVE
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
 		  	       simCounter++;//increment the sim counter
-	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
+	  	    	 }
+	  	    	 if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
 //	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
 	  	    		 
 	  	    		 if(runType == 0) {//if single run
 	  	    			endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    		 } else if (runType == 1) {//if multi run
+	  	    			 Startup_Multi.numTrialsRun += 1;
 	  	    			 sim.dispose();
+	  	    			 Startup_Multi.startNextTrialFlag = true;
+	  	    			 System.out.println("End trial");
 	  	    			 return;
 	  	    		 }
 	  	    		 

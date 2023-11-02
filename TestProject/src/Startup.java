@@ -37,7 +37,7 @@ public class Startup extends JPanel {
     public static String droneposTypeSelectedOption = "";
     
     //variable for debug mode
-    public static boolean debugMode = true; //false is debug mode disabled, true is enabled
+    public static boolean debugMode = App.test_mode; //false is debug mode disabled, true is enabled
     
     //passthrough variables
     public static int startingx;
