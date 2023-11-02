@@ -1,32 +1,80 @@
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
-
-    public static int startingx = DroneFleet.screenX / 2; // Starting x position
-    public static int startingy = DroneFleet.screenY / 2; // Starting y position
-    public static String droneMovementSelectedOption = "Grid"; // "Grid" or "Random"
-    public static int numTrials = 3; // Number of trials
-    public static int numTrialsRun = 1;
-    public static boolean startNextTrialFlag = true;
-
+	
+	static int numTrials = 5; // number of simulations to run
+	static int numTrialsRun = 1;
+	
     public static void main(String[] args) {
-        System.out.println("multi mode");
-        
-        while (numTrialsRun <= numTrials) {
-            if (startNextTrialFlag) {
-                System.out.println("Running Trial: " + numTrialsRun);
-                DroneFleet.run(1, false, startingx, startingy, droneMovementSelectedOption, false);
-                numTrialsRun++; // Increment the trial counter
-                startNextTrialFlag = false; // Reset the flag here
-            } else {
-                try {
-                    Thread.sleep(100); // Add a short delay to avoid busy-waiting
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        int numSimulations = numTrials;
+
+        for (int i = 0; i < numSimulations; i++) {
+            int runType = 1;
+            boolean fullMarkerLinesIn = false;
+            int startingxIn = 500; // starting x coord
+            int startingyIn = 500; // starting y coord
+            String droneMovementSelectedOption = "Grid"; // "Random" or "Grid"
+            boolean debugMode = false;
+
+            // Create a new instance of DroneFleet
+            DroneFleet simFrame = new DroneFleet();
+
+            // Call the reset method to reset the simulation state
+            simFrame.reset();
+
+            // Create a new JFrame and add the DroneFleet instance
+            JFrame sim = new JFrame();
+            sim.setSize(1514, 838);
+            sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            sim.add(simFrame);
+            sim.setVisible(false);//dont need to see empty frames
+
+            // Use a CountDownLatch to ensure that the simulation is finished
+            CountDownLatch latch = new CountDownLatch(1);
+
+            // Start the simulation in a separate thread
+            Thread simulationThread = new Thread(() -> {
+                // Call the DroneFleet main method with the specified parameters
+                DroneFleet.main(runType, fullMarkerLinesIn, startingxIn, startingyIn, droneMovementSelectedOption, debugMode);
+
+                // Wait for the simulation to complete
+                while (simFrame.isSimulationRunning()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+
+                // Signal that the simulation is finished
+                latch.countDown();
+            });
+
+            simulationThread.start();
+
+            try {
+                latch.await(); // Wait for the simulation to finish
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            
+            // Delay for simulation thread to finish
+            try {
+                Thread.sleep(100); // Delay in milliseconds (10 seconds in this example)
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            numTrialsRun += 1;
+            
         }
 
-        System.exit(0); // Terminate the console (0 indicates successful termination)
+        System.exit(0);
     }
 }

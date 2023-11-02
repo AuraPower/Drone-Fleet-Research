@@ -160,7 +160,7 @@ public class Startup extends JPanel {
                 DroneFleet.currentFrame = 1;
 //                System.out.println("start button pressed: " + DroneFleet.currentFrame);
                 startup.setVisible(false);
-                DroneFleet.run(0, fullMarkerLines, startingx, startingy, droneMovementSelectedOption, debugMode);
+                DroneFleet.main(0, fullMarkerLines, startingx, startingy, droneMovementSelectedOption, debugMode);
             }
         });
         

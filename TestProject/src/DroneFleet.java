@@ -23,7 +23,7 @@ import java.net.URL;
 
 public class DroneFleet extends JPanel {//create the DroneFleet class and have it extend java swing JPanel
   private static final long serialVersionUID = 1L;//boilerplate
-  
+ 
 //public variables
   //array lists for the drones and drone paths
       static ArrayList<drone> drones = new ArrayList<drone>();
@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 64;
+	  public static int numDrones = 100;
 	  //starting positions
 	  public static int startingx, startingy; // only need to initialize, set in startup
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -56,12 +56,12 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone false positive count
 	  public static double falsePositiveCount = 0;
   //sim variables
-	  public static int simspeed=50; //lower # is faster
+	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
   	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
   	  public static boolean isTargetPosRandom = true;
-	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2; //target position (only if not random)
+	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
   //other
 	  BufferedImage droneImg = null;{
 		  try {
@@ -122,22 +122,23 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		      g.drawLine(point1[0], point1[1], point2[0], point2[1]);
 		    }
 		  }
+	  
+	  public boolean isSimulationRunning() {
+		    return simFlag == 1;
+		}
+	  public int getSimFlag() {
+		    return simFlag;
+		}
 	
 	  //main
-	  public static void run(int runType, boolean fullMarkerLinesIn, int startingxIn, int startingyIn, String droneMovementSelectedOption, boolean debugMode){
+	  static final Object lock = new Object();
+	  public static void main(int runType, boolean fullMarkerLinesIn, int startingxIn, int startingyIn, String droneMovementSelectedOption, boolean debugMode){
 		  //variable passthrough
 		  fullMarkerLines = fullMarkerLinesIn;
 		  startingx = startingxIn;
 		  startingy = startingyIn;
 		  //runType is 0 for single, 1 for multi-run
-		  //need to reset all variables?????
-		  simFlag = 1;
-		  simCounter = 0;
-		  drones.clear();
-		  dronePaths.clear();
-		  targets.clear();
-		  falsePositiveCount = 0;
-		  currentFrame = 0;
+		  
 		  
 	    JFrame sim = new JFrame();//makes Jframe
 	    sim.setSize(1514, 838);//sets the JFrame's size to 1514x838 for 15mix8mi plus some for edges and app header
@@ -182,20 +183,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	    }//end drone creation loop
 	    
 	    if(isTargetPosRandom) {//checks if the target position is set to random or set
-	    	if(App.test_mode) {//if testing mode is on, put the target anywhere in the inside 1/9th of the screen
-	    		int newtargetX_start = (int)(Math.random()*(screenX));//generate within front 2/3s of screen
-	    		int newtargetY_start = (int)(Math.random()*(screenY));//generate within front 2/3s of screen
-	    		//if the new target's start pos is in the front 1/3 of the screen, just place on edge of 1/3
-//	    		if(newtargetX_start < screenX - (screenX*(2/3))) {
-//	    			newtargetX_start = screenX - screenX*(2/3);
-//	    		}
-//	    		if(newtargetY_start > screenY - (screenY*(2/3))) {
-//	    			newtargetY_start = screenY- screenY*(2/3);
-//	    		}
-		    	simFrame.targets.add(new target(newtargetX_start, newtargetY_start, targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
-	    	}else {//if testing mode is not on, put the target anywhere
-		    	simFrame.targets.add(new target((int)(Math.random()*screenX), (int)(Math.random()*screenY), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
-	    	}
+	    	simFrame.targets.add(new target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
 	    }else {//if target position is not random
 	    	simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
 	    }
@@ -216,27 +204,49 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	  	       simFrame.repaint();//repaints the screen with the new target's location --- REPAINTS SCREEN EVERY TIME THE TARGETS MOVE
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
 		  	       simCounter++;//increment the sim counter
-	  	    	 }
-	  	    	 if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
+	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
 //	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
-	  	    		 
 	  	    		 if(runType == 0) {//if single run
 	  	    			endButton.setVisible(true);//shows the endButton (moves to statistics screen)
 	  	    		 } else if (runType == 1) {//if multi run
-	  	    			 Startup_Multi.numTrialsRun += 1;
 	  	    			 sim.dispose();
-	  	    			 Startup_Multi.startNextTrialFlag = true;
-	  	    			 System.out.println("End trial");
-	  	    			 return;
 	  	    		 }
-	  	    		 
+	  	    		synchronized (lock) {
+                        lock.notify();
+                    }
+	  	    		 return;
 	  	    	 }//end simflag if
 	  	     }//end listener
 	  	});//end timer action
 	  	   timer.start();//start the sim timer
 	  }//end main
-	} //JPanel end
+
+
+
+		public void reset() {
+			// Reset simulation state
+	        synchronized (lock) {
+	            drones.clear();
+	            dronePaths.clear();
+	            targets.clear();
+	            gridSearchCoordinateList.clear();
+	            falsePositiveCount = 0;
+	            simFlag = 1;
+	            simCounter = 0;
+	            simspeed = 50;
+	            Movement.coordinates.clear();
+	            Movement.coordinates_fluid.clear();
+	            Movement.ODO_divideScreenIntoGrid = false;
+
+	            // Reset variables in the checkForFind class
+	            checkForFind.numFalseNegatives = 0;
+
+	            // Reset other variables and configurations in checkForFind class as needed
+	        }
+		}
+
+} //JPanel end
 
 class drone {  //drone class for tracking/moving/etc drones
 		int x;

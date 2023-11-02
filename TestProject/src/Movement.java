@@ -3,9 +3,9 @@ import java.util.Random;
 
 public class Movement {
 	
-	private static ArrayList<int[]> coordinates = new ArrayList<>();
-	private static ArrayList<int[]> coordinates_fluid = new ArrayList<>();
-	private static boolean ODO_divideScreenIntoGrid = false; // ODO (only do once) check for dividing up the screen (we only need to divide it up once, not every time)
+	static ArrayList<int[]> coordinates = new ArrayList<>();
+	static ArrayList<int[]> coordinates_fluid = new ArrayList<>();
+	static boolean ODO_divideScreenIntoGrid = false; // ODO (only do once) check for dividing up the screen (we only need to divide it up once, not every time)
 	
 	
 //drone movement
@@ -209,7 +209,7 @@ public class Movement {
 		        } else if (drone.getResetCounter() == 1) {
 		        	drone.setResetCounter(drone.getResetCounter() - 1);
 		        	int[] coordinates_temp = divideScreenIntoGrid_singular(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones,i);
-		        	System.out.println("reset? setting drone " + i + " to: " + coordinates_temp[0] + "," + coordinates_temp[1]);
+//		        	System.out.println("reset? setting drone " + i + " to: " + coordinates_temp[0] + "," + coordinates_temp[1]);
 		        	
 		        	coordinates_fluid.set(i, coordinates_temp);
 		        } else if (drone.getResetCounter() == 0) {
