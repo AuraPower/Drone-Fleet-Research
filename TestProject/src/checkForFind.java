@@ -44,14 +44,18 @@ public class checkForFind {
 //					  				System.out.println("actual/search: " + distCheck + ", random Exp: " + randomExp);
 //					  				System.out.println("Distance Found At: " + actualdistance);
 //					  				System.out.println("Distance: " + actualdistance +", DistCheck:" + distCheck + ", Log'd percent find: " + distCheckLog + ", random Num: " + randomNum);
-					  				System.out.println("Found in: "+simCounter+" cycles.");
-					  				System.out.println("Trial Completed: " + Startup_Multi.numTrialsRun);
+					  				
+					  				if(cdrone.getResetCounter() <= 2) {//if this drone is at its original location (no reset counter
+					  					System.out.println("Initial find - verifying");
+					  					Movement.verifyTargetFind(cdrone);//send the nearest drone over to verify
+						  			}
 								
-				  				//send the nearest drone over to verify
-					  				Movement.verifyTargetFind(cdrone);
+				  				
+					  				
 				  				
 					  			//if the drone was verifying a target find and found one (therefore 2 drones have now found the target)
 					  			if(cdrone.getResetCounter() >= 2) {
+					  				System.out.println("Trial Completed: " + Startup_Multi.numTrialsRun + ", Found in: "+simCounter+" cycles.");
 					  				return 0;
 					  			}
 						  		

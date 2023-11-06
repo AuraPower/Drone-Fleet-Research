@@ -6,7 +6,8 @@ public class Movement {
 	static ArrayList<int[]> coordinates = new ArrayList<>();
 	static ArrayList<int[]> coordinates_fluid = new ArrayList<>();
 	static boolean ODO_divideScreenIntoGrid = false; // ODO (only do once) check for dividing up the screen (we only need to divide it up once, not every time)
-	
+	static int cellWidth = 0;
+	static int cellHeight = 0;
 	
 //drone movement
 	//DRONE MOVEMENT FUNCTION TEMPLATE:
@@ -44,6 +45,9 @@ public class Movement {
 	
 	//verifyTargetFind moves the closest drone to the one that "found" a target to verify its find (only works for grid search currently)
 	public static void verifyTargetFind(drone drone) {//"drone" is the one that "found" a target
+//		int positionFindOccurredAtX = drone.x;
+//		int positionFindOccurredAtY = drone.y;
+		int[] coordsFindOccurredAt = {drone.x, drone.y};
 		//find the closet drone via droneID (they should always be close to each other)
 		int closestDroneID = 0;
 		if(drone.droneID!=0) {//as long as the drone isnt drone 0, find the drone before it
@@ -52,10 +56,11 @@ public class Movement {
 			closestDroneID = drone.droneID + 1;
 		}
 		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the closest drone
-	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target 
+//	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target - DEPRECIATED - we use the point at which the "find occured"
 	  	int[] tempCoords = coordinates.get(cdrone.droneID); //get the og coordiantes of drone that is moving
 //	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
-		coordinates_fluid.set(closestDroneID, newCoordinates); //set the closest drone's target coordinates to coordinates of the drone that "found" the target
+	  	cdrone.setHasReachedGrid(false);
+		coordinates_fluid.set(closestDroneID, coordsFindOccurredAt); //set the closest drone's target coordinates to coordinates of the drone that "found" the target
 		//find the drone that has the closestDroneID (the on thats moving to check a positive) and start the countdown at x
 		
 		cdrone.setResetCounter(50);
@@ -90,6 +95,54 @@ public class Movement {
 	      }//end specific drone for loop
 	  }//end moveDronesRandom
 	
+	public static void moveSingularDroneRandomInsideArea(drone drone, int boxWidth, int boxHeight) {
+		double dronespeed = DroneFleet.droneSpeed;
+	    int newX = drone.targetPositions[drone.currentTargetIndex];
+	    int newY = drone.targetPositions[drone.currentTargetIndex + 1];
+
+	    // Calculate the distance to the target position
+	    double deltaX = newX - drone.x;
+	    double deltaY = newY - drone.y;
+	    double distanceToTarget = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+	    // Calculate the movement in the x and y direction based on speed
+	    double moveX = (deltaX / distanceToTarget) * dronespeed;
+	    double moveY = (deltaY / distanceToTarget) * dronespeed;
+
+	    // Update the drone's position
+	    if (distanceToTarget <= dronespeed) {
+	        // If the distance is less than the speed, move directly to the target
+	        drone.x = newX;
+	        drone.y = newY;
+	        
+	        // Increment target index only when the drone reaches the target
+	        drone.currentTargetIndex += 2;
+	        if (drone.currentTargetIndex >= drone.targetPositions.length) {
+	            drone.currentTargetIndex = 0; // Start over when all positions have been visited
+	        }
+	    } else {
+	        // Move incrementally towards the target
+	        drone.x += moveX;
+	        drone.y += moveY;
+	    }
+	}
+	
+	public static void initmoveSingularDroneRandomInsideAreaPositions(int boxWidth, int boxHeight) {
+		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+			drone  drone = DroneFleet.drones.get(i);
+			int coordinates[] = coordinates_fluid.get(i);
+		
+			drone.targetPositions = new int[] {coordinates[0], coordinates[1], 
+                    coordinates[0] - boxWidth / 2, coordinates[1] - boxHeight / 2, 
+                    coordinates[0] + boxWidth / 2, coordinates[1] - boxHeight / 2, 
+                    coordinates[0] - boxWidth / 2, coordinates[1] + boxHeight / 2, 
+                    coordinates[0] + boxWidth / 2, coordinates[1] + boxHeight / 2};
+
+			drone.currentTargetIndex = 0; // Start at the center positio
+		}
+//		System.out.println("created target positions");
+	}
+	
 	//grid drone movement
 	
 	public static int[] gridPair(int num, int ratioWidth, int ratioHeight) {//this function finds the number of rows and columns based on numDrones and the aspect ratio of the screen
@@ -123,8 +176,8 @@ public class Movement {
 		gridPair = gridPair(DroneFleet.numDrones, DroneFleet.screenY, DroneFleet.screenX);//find the number of rows/columns with the gridPair function
         int rows = gridPair[0];//sets "rows" to the 0th position of gridPairs
         int cols = gridPair[1];//sets "columns" to the 1st position of gridPairs
-        int cellWidth = width / cols;//find the cellWidth by dividing the screen width by the number of columns
-        int cellHeight = height / rows;//find the cellHeight by dividing the screen height by the number of rows
+        cellWidth = width / cols;//find the cellWidth by dividing the screen width by the number of columns
+        cellHeight = height / rows;//find the cellHeight by dividing the screen height by the number of rows
         int offsetX = (width - cellWidth * cols) / 2;//find the X offset (center) of the boxes by math
         int offsetY = (height - cellHeight * rows) / 2;//find the Y offest (center of the boxes by math
         //for every box:
@@ -153,8 +206,8 @@ public class Movement {
 		gridPair = gridPair(DroneFleet.numDrones, DroneFleet.screenY, DroneFleet.screenX);//find the number of rows/columns with the gridPair function
         int rows = gridPair[0];//sets "rows" to the 0th position of gridPairs
         int cols = gridPair[1];//sets "columns" to the 1st position of gridPairs
-        int cellWidth = width / cols;//find the cellWidth by dividing the screen width by the number of columns
-        int cellHeight = height / rows;//find the cellHeight by dividing the screen height by the number of rows
+        cellWidth = width / cols;//find the cellWidth by dividing the screen width by the number of columns
+        cellHeight = height / rows;//find the cellHeight by dividing the screen height by the number of rows
         int offsetX = (width - cellWidth * cols) / 2;//find the X offset (center) of the boxes by math
         int offsetY = (height - cellHeight * rows) / 2;//find the Y offest (center of the boxes by math
         //for every box:
@@ -185,14 +238,27 @@ public class Movement {
 		divideScreenIntoGrid(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones); //divide the screen up into the coordinate grid
 		coordinates_fluid = coordinates;//copy the grid coordinates to the changing coordinate base, coordinates_fluid
 		ODO_divideScreenIntoGrid = true;
+		
 //		System.out.println("Dividing screen");
 		}
 		
+		if (DroneFleet.drones.size() > 1){
+			drone testdrone = DroneFleet.drones.get(1);
+			if(testdrone.targetPositions != null) {
+				
+			}else {
+				initmoveSingularDroneRandomInsideAreaPositions(cellWidth, cellHeight);
+			}
+		}
+		
+		
 		falsePositiveChance(); //checks for false positives by faulted drones and sends the closest drone to check if so (changes the closest drones destination)
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
-			  	int[] coordinate = coordinates_fluid.get(i);//set the int array coordinate to the current drone's destination from the arraylist coordinates_fluid
-		        int droneX = drone.getX();//get the current done's X position
+			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected 
+			  int[] coordinate = coordinates_fluid.get(i);//set the int array coordinate to the current drone's destination from the arraylist coordinates_fluid
+		        
+			  if(drone.getHasReachedGrid() == false) {//if the drone has not reached the center point of the grid
+			  	int droneX = drone.getX();//get the current done's X position
 		        int droneY = drone.getY();//get the current drone's Y position
 		        int coordX = coordinate[0];//set the coordX variable to the previously found drone's box's center X location
 		        int coordY = coordinate[1];//set the coordY variable to the previously found drone's box's center Y location
@@ -201,7 +267,21 @@ public class Movement {
 		        double dy = DroneFleet.droneSpeed * Math.sin(angle);//finds the movement change needed in the Y direction
 		        drone.x = (droneX + (int)dx);//move the drone's X in the direction of it's box's center X coordinate
 		        drone.y = (droneY + (int)dy);//move the drone's Y in the direction of it's box's center Y coordinate
+			  }else if(drone.getHasReachedGrid() == true) {//if the drone has already reached the center point of the grid
+				  //SEARCH THE SMALL GRID?
+				  moveSingularDroneRandomInsideArea(drone, cellWidth, cellHeight);
+			  }
 		        DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
+			  
+		        //hasReachedGrid check - if the drone has reached its center point of its grid (or wihtin a few pixels), update the flag
+			        double distanceThreshold = 5.0; // Adjust this threshold as needed
+	
+			        double distanceToTarget = Math.sqrt(Math.pow(drone.x - coordinate[0], 2) + Math.pow(drone.y - coordinate[1], 2));
+	
+			        if (distanceToTarget <= distanceThreshold) {
+			            drone.setHasReachedGrid(true);
+			        }
+		        
 		        //decrement the reset count if its running (2-50), reset its fluid coordinate destination if 1, and do nothing for 0
 		        if(drone.getResetCounter() >= 2) {
 		        	drone.setResetCounter(drone.getResetCounter() - 1);
@@ -209,6 +289,7 @@ public class Movement {
 		        } else if (drone.getResetCounter() == 1) {
 		        	drone.setResetCounter(drone.getResetCounter() - 1);
 		        	int[] coordinates_temp = divideScreenIntoGrid_singular(DroneFleet.screenX, DroneFleet.screenY, DroneFleet.numDrones,i);
+		        	
 //		        	System.out.println("reset? setting drone " + i + " to: " + coordinates_temp[0] + "," + coordinates_temp[1]);
 		        	
 		        	coordinates_fluid.set(i, coordinates_temp);

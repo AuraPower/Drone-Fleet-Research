@@ -256,6 +256,9 @@ class drone {  //drone class for tracking/moving/etc drones
 		boolean faulted;
 		int droneID;
 		int resetCounter = 0;
+		boolean hasReachedGrid = false;
+		int[] targetPositions; // List of target positions (center and corners)
+	    int currentTargetIndex; // Index of the current target position
 	public drone(int x, int y, int size, Color color, boolean faulted, int droneID) {//drone constructor
 		this.x = x;
 	    this.y = y;
@@ -269,6 +272,12 @@ class drone {  //drone class for tracking/moving/etc drones
 	}
 	public void setFaulted(boolean faulted) {
 		this.faulted = faulted;
+	}
+	public boolean getHasReachedGrid() {
+		return hasReachedGrid;
+	}
+	public void setHasReachedGrid(boolean hasReachedGrid) {
+		this.hasReachedGrid = hasReachedGrid;
 	}
 	//Methods for drone class
 	public Color getColor() {

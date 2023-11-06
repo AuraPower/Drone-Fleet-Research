@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 5; // number of simulations to run
+	static int numTrials = 15; // number of simulations to run
 	static int numTrialsRun = 1;
 	
     public static void main(String[] args) {
