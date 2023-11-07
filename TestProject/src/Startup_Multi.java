@@ -5,14 +5,25 @@ import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 15; // number of simulations to run
-	static int numTrialsRun = 1;
+	static int numTrials = 50; // number of simulations to run
+	static int numTrialsRun = 1; // do not change this from 1
+	static ArrayList<Integer> numFalsePositives = new ArrayList<>();
+	static ArrayList<Integer> numFalseNegatives = new ArrayList<>();
+	static ArrayList<Integer> timeToFind = new ArrayList<>();
 	
     public static void main(String[] args) {
+    	
+    	for(int j = 0; j < numTrials; j++) {
+    		Startup_Multi.numFalseNegatives.add(0);
+    		Startup_Multi.numFalsePositives.add(0);
+    		Startup_Multi.timeToFind.add(0);
+    	}
+    	
         int numSimulations = numTrials;
 
         for (int i = 0; i < numSimulations; i++) {
@@ -75,6 +86,7 @@ public class Startup_Multi {
             
         }
 
+        excel_output.main(args);
         System.exit(0);
     }
 }

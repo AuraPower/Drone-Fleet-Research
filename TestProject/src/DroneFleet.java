@@ -39,7 +39,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
   	  public static int simFlag=1, simCounter=0;
   //drone&main variables
   	  //number of drones starting on the screen
-	  public static int numDrones = 100;
+	  public static int numDrones = 64;
 	  //starting positions
 	  public static int startingx, startingy; // only need to initialize, set in startup
 	  public static int directionStart = 1; //0 is nothing, 1 is random directions
@@ -50,9 +50,9 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone speed
 	  public static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
 	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being all)
-	  public static double droneFaultRatio = 0.08;
+	  public static double droneFaultRatio = 0.1;
 	  //drone false positive ratio (if faulted, chance every move to generate a false positive (0.1=10% chance every time a faulted drone moves)
-	  public static double droneFalsePosChance = 0.008; 
+	  public static double droneFalsePosChance = 0.05; 
 	  //drone false positive count
 	  public static double falsePositiveCount = 0;
   //sim variables

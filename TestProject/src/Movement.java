@@ -36,6 +36,7 @@ public class Movement {
 			  
 			  if(cdrone.faulted == true && (Math.random()<DroneFleet.droneFalsePosChance)) { //if the current drone is faulted & a false positive is generated
 				  DroneFleet.falsePositiveCount += 1; //adds to the false positive counter
+				  Startup_Multi.numFalsePositives.set(Startup_Multi.numTrialsRun-1, Startup_Multi.numFalsePositives.get(Startup_Multi.numTrialsRun-1)+1);
 //				  System.out.println("Number of false positives:" + DroneFleet.falsePositiveCount);
 				  verifyTargetFind(cdrone);
 			  }
