@@ -29,7 +29,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
       static ArrayList<drone> drones = new ArrayList<drone>();
       static ArrayList<ArrayList<Integer[]>> dronePaths = new ArrayList<ArrayList<Integer[]>>();
   	  static ArrayList<target> targets = new ArrayList<target>();
-  	  static ArrayList<int[]> gridSearchCoordinateList = new ArrayList<int[]>();
+//  	  static ArrayList<int[]> gridSearchCoordinateList = new ArrayList<int[]>();
   //settings variables
   	  private static boolean probabilisticRadius = true;
   	  public static boolean fullMarkerLines = false;
@@ -48,20 +48,19 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone search radius: how far drones will start to spot targets
 	  public static int droneSearchRadius = 50;//100 is a mile radius, 50 half mile radius (for maximum search radius)
 	  //drone speed
-	  public static int droneSpeed = 10;//in pixels (relate to mph with simCountPerHour)
-	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being all)
-	  public static double droneFaultRatio = 0.1;
+	  public static int droneSpeed = 100;//in pixels (100 pixel = 1 mile. happens once per simcount, therefore if simcount is assumed to be 1/10 hour, dronespeed/100 can be miles per hour)
+	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being 100%)
+	  public static double droneFaultRatio = 0.40;
 	  //drone false positive ratio (if faulted, chance every move to generate a false positive (0.1=10% chance every time a faulted drone moves)
-	  public static double droneFalsePosChance = 0.05; 
+	  public static double droneFalsePosChance = 0.035; 
 	  //drone false positive count
 	  public static double falsePositiveCount = 0;
   //sim variables
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
-  	  public static double simCountPerHour = 100.0;//100 is default (100 sim counts = 1 hour) (double for accuracy)
   //target variables
   	  public static boolean isTargetPosRandom = true;
-	  public static int targetX = 450, targetY = 300, targetSize = 20, targetSpeed = 2;
+	  public static int targetX = DroneFleet.screenX/2, targetY = DroneFleet.screenY/2, targetSize = 20, targetSpeed = 2;
   //other
 	  BufferedImage droneImg = null;{
 		  try {
@@ -77,7 +76,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		  drawMarkers(g);//draw the mile markers & label(s)
 		  for (int i = 0; i < drones.size(); i++) {//draw drones and drone path
 			  drone cdrone = drones.get(i);
-			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
+//			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
 			  if(Startup.debugMode) {//if the simulation is in debug mode, draw the drones as circles with differentiating colors for faulted agents
 				  g.fillOval(cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.size, cdrone.size); //debug mode drawing
@@ -192,18 +191,24 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  	     public void actionPerformed(ActionEvent e) {
 	  	    	 if(simFlag==1) {//if simFlag shows sim is on
 	  	    	   if(droneMovementSelectedOption == "Random") {
-	  	    		   Movement.moveDronesRandom();//moves all the drones
+	  	    		   if(drones.size()>0) {
+	  	    			 Movement.moveDronesRandom();//moves all the drones randomly
+	  	    		   }
+	  	    		   
 	  	    	   }else if (droneMovementSelectedOption == "Grid") {
-	  	    		   Movement.moveDronesGrid();
+	  	    		   Movement.moveDronesGrid();//moves all the drones grid-ly
 	  	    	   }else {
 	  	    		   System.out.println("Error code 1: Movement Function Incorrectly Selected");
 	  	    		   System.exit(0);
 	  	    	   }
 	  	  	       
-	  	  	       Movement.moveTargetsRandom();//moves all the targets
+	  	  	       Movement.moveTargetsRandom();//moves all the targets randomly
 	  	  	       simFrame.repaint();//repaints the screen with the new target's location --- REPAINTS SCREEN EVERY TIME THE TARGETS MOVE
 	  	  	       simFlag = checkForFind.checkForFindFunction(drones,targets,droneSearchRadius,simCounter,probabilisticRadius);//check for target find
-		  	       simCounter++;//increment the sim counter
+	  	  	       
+	  	  	       if(drones.size()>0) {
+	  	  	    	   simCounter++;//increment the sim counter only if there are drones (needs 1 cycle to setup)
+	  	  	       }
 	  	    	 }else if(simFlag==0) {//if SimFlag shows sim is off (only occurs after find)
 	  	    		//dronefleet final message; drone speed in mph is dronespeed in pixels times the ratio of the simcountperhour/100 (pixels in a mile is 100)
 //	  	    		 System.out.println("Hours to find: "+ simCounter/simCountPerHour + ", Drone MPH: " + droneSpeed*(simCountPerHour/100));
@@ -230,14 +235,14 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	            drones.clear();
 	            dronePaths.clear();
 	            targets.clear();
-	            gridSearchCoordinateList.clear();
+//	            gridSearchCoordinateList.clear();
 	            falsePositiveCount = 0;
 	            simFlag = 1;
 	            simCounter = 0;
-	            simspeed = 50;
 	            Movement.coordinates.clear();
 	            Movement.coordinates_fluid.clear();
 	            Movement.ODO_divideScreenIntoGrid = false;
+	            Movement.ODO_initializeCoordinatesRandom = false;
 
 	            // Reset variables in the checkForFind class
 	            checkForFind.numFalseNegatives = 0;

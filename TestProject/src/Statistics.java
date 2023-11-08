@@ -27,13 +27,13 @@ public class Statistics extends JPanel {
 	    statistics.add(statisticsFrame);
   	  	statistics.setVisible(true);
   	  	
-  	  	JLabel TimeToFind = new JLabel("Hours to find: "+ DroneFleet.simCounter/DroneFleet.simCountPerHour) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
-  	  	statisticsFrame.add(TimeToFind);
-  	  	TimeToFind.setBounds((1514-200)/2,540,200,30);
-  	  	
-  	  	JLabel DroneSpeed = new JLabel("Drone MPH: " + DroneFleet.droneSpeed*(DroneFleet.simCountPerHour/100)) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
-	  	statisticsFrame.add(DroneSpeed);
-	  	DroneSpeed.setBounds((1514-200)/2,650,200,30);
+//  	  	JLabel TimeToFind = new JLabel("Hours to find: "+ DroneFleet.simCounter/DroneFleet.simCountPerHour) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
+//  	  	statisticsFrame.add(TimeToFind);
+//  	  	TimeToFind.setBounds((1514-200)/2,540,200,30);
+//  	  	
+//  	  	JLabel DroneSpeed = new JLabel("Drone MPH: " + DroneFleet.droneSpeed*(DroneFleet.simCountPerHour/100)) ;//Stats Label 1 SimCounter: subtracts 1 to account for end frame
+//	  	statisticsFrame.add(DroneSpeed);
+//	  	DroneSpeed.setBounds((1514-200)/2,650,200,30);
   	  	
   	  	//create/add the button to start the simulation and switch to that screen
 	  	JButton terminateButton = new JButton("Close Program");

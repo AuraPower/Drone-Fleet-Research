@@ -47,7 +47,11 @@ public class checkForFind {
 					  				
 					  				if(cdrone.getResetCounter() <= 2) {//if this drone is at its original location (no reset counter)
 //					  					System.out.println("Initial find - verifying");
-					  					Movement.verifyTargetFind(cdrone);//send the nearest drone over to verify
+					  				  if(Startup_Multi.droneMovementSelectedOption == "Grid") {
+					  					  Movement.verifyTargetFind_Grid(cdrone);
+					  				  }else if(Startup_Multi.droneMovementSelectedOption == "Random") {
+					  					Movement.verifyTargetFind_Random(cdrone);
+					  				  }
 						  			}
 								
 					  			//if the drone was verifying a target find and found one (therefore 2 drones have now found the target)

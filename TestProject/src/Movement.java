@@ -6,6 +6,7 @@ public class Movement {
 	static ArrayList<int[]> coordinates = new ArrayList<>();
 	static ArrayList<int[]> coordinates_fluid = new ArrayList<>();
 	static boolean ODO_divideScreenIntoGrid = false; // ODO (only do once) check for dividing up the screen (we only need to divide it up once, not every time)
+	static boolean ODO_initializeCoordinatesRandom = false; // ODO for initializing the random coordinates
 	static int cellWidth = 0;
 	static int cellHeight = 0;
 	
@@ -38,14 +39,19 @@ public class Movement {
 				  DroneFleet.falsePositiveCount += 1; //adds to the false positive counter
 				  Startup_Multi.numFalsePositives.set(Startup_Multi.numTrialsRun-1, Startup_Multi.numFalsePositives.get(Startup_Multi.numTrialsRun-1)+1);
 //				  System.out.println("Number of false positives:" + DroneFleet.falsePositiveCount);
-				  verifyTargetFind(cdrone);
+				  if(Startup_Multi.droneMovementSelectedOption == "Grid") {
+					  verifyTargetFind_Grid(cdrone);
+				  }else if(Startup_Multi.droneMovementSelectedOption == "Random") {
+					  Movement.verifyTargetFind_Random(cdrone);
+				  }
+				  
 			  }
 			  
 		}
 	}
 	
 	//verifyTargetFind moves the closest drone to the one that "found" a target to verify its find (only works for grid search currently)
-	public static void verifyTargetFind(drone drone) {//"drone" is the one that "found" a target
+	public static void verifyTargetFind_Grid(drone drone) {//"drone" is the one that "found" a target
 //		int positionFindOccurredAtX = drone.x;
 //		int positionFindOccurredAtY = drone.y;
 		int[] coordsFindOccurredAt = {drone.x, drone.y};
@@ -58,7 +64,6 @@ public class Movement {
 		}
 		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the closest drone
 //	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target - DEPRECIATED - we use the point at which the "find occured"
-	  	int[] tempCoords = coordinates.get(cdrone.droneID); //get the og coordiantes of drone that is moving
 //	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
 	  	cdrone.setHasReachedGrid(false);
 		coordinates_fluid.set(closestDroneID, coordsFindOccurredAt); //set the closest drone's target coordinates to coordinates of the drone that "found" the target
@@ -68,9 +73,88 @@ public class Movement {
 //		System.out.println("Drone # " +closestDroneID + "'s reset counter = " + cdrone.resetCounter);
 		
 	}
+	
+	public static void verifyTargetFind_Random(drone drone) {//"drone" is the one that "found" a target
+		int[] coordsFindOccurredAt = {drone.x, drone.y};
+		//find a random drone via droneID
+		int closestDroneID = 0;
+		if(drone.droneID!=0) {//as long as the drone isnt drone 0, find the drone before it
+			closestDroneID = drone.droneID - 1;
+		} else {//otherwise find the drone after it
+			closestDroneID = drone.droneID + 1;
+		}
+		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the randomly chosen drone
+//	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target - DEPRECIATED - we use the point at which the "find occured"
+//	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
+	  	cdrone.setHasReachedGrid(false);
+		coordinates_fluid.set(closestDroneID, coordsFindOccurredAt); //set the randomly chosen drone's target coordinates to coordinates of the drone that "found" the target
+		//find the drone that has the closestDroneID (the on thats moving to check a positive) and start the countdown at x
+		
+		cdrone.setResetCounter(8);
+//		System.out.println("Drone # " +closestDroneID + "'s reset counter = " + cdrone.resetCounter);
+		
+	}
 		
 	//random drone movement
-	public static void moveDronesRandom() {	  //move moves every drone at the same time (1 call = every drone moves)
+//	public static void moveDronesRandom() {	  //move moves every drone at the same time (1 call = every drone moves)
+//		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+//			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+//			  
+//			  boolean insideArea=false;
+//			  int newX = 0;
+//		      int newY = 0;
+//		      
+//			  while(!insideArea) {//while the drone's new position is not within the screen, run this while loop
+//			  	Random random = new Random();//create a new random number
+//	            double direction = random.nextDouble() * 2 * Math.PI;//Generate a random direction between 0 and 2π radians
+//	            int xVelocity = (int) Math.round(DroneFleet.droneSpeed * Math.cos(direction));//Calculate the x component of the velocity based on the direction
+//	            int yVelocity = (int) Math.round(DroneFleet.droneSpeed * Math.sin(direction));//Calculate the y component of the velocity based on the direction
+//	            newX = drone.x + xVelocity;//Calculate the new position based on the old position and the random velocity just generated
+//	            newY = drone.y + yVelocity;//Calculate the new position based on the old position and the random velocity just generated
+//	            
+//	            if (newX >= 0 && newX < 1500 && newY >= 0 && newY < 800) {// Check if the new position is inside the screen
+//	                insideArea = true;//if the new position is in the area, break out of the while loop
+//	            }//end if
+//			  }//end while loop
+//		        drone.x = newX; //Move the drone to the new x position after breaking out of the while loop
+//		        drone.y = newY; //Move the drone to the new y position after breaking out of the while loop
+//		        DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
+//	      }//end specific drone for loop
+//	  }//end moveDronesRandom
+	//random drone movement
+	
+	public static void moveDronesRandom() {
+		if(!ODO_initializeCoordinatesRandom) {// only do once flag
+//			System.out.println("INIT RANDOM");
+			initializeCoordinatesRandom();
+			coordinates_fluid = coordinates;//copy the grid coordinates to the changing coordinate base, coordinates_fluid
+			ODO_initializeCoordinatesRandom = true;
+			
+			
+			}
+		moveDronesRandomMove();
+	}
+	
+	public static void initializeCoordinatesRandom() {
+		coordinates.clear();
+		coordinates_fluid.clear();
+//		System.out.println(DroneFleet.drones.size());
+		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
+			drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			int[] current_coord = {drone.x, drone.y};
+			int[] test = {0,0};
+//			System.out.println("Adding coordinate");
+			coordinates.add(test);
+			drone.setHasReachedGrid(true);
+			
+		}
+//		System.out.println("INIT RANDOM COORDS COMPLETE");
+//		System.out.println(coordinates);
+	}
+
+	
+	public static void moveDronesRandomMove() {	  //move moves every drone at the same time (1 call = every drone moves)
+		falsePositiveChance();
 		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 			  
@@ -90,13 +174,41 @@ public class Movement {
 	                insideArea = true;//if the new position is in the area, break out of the while loop
 	            }//end if
 			  }//end while loop
-		        drone.x = newX; //Move the drone to the new x position after breaking out of the while loop
-		        drone.y = newY; //Move the drone to the new y position after breaking out of the while loop
+			  
+			  //TODO: do this only if the drone is not verifying
+			  if(drone.getResetCounter() >= 2) {
+		        	drone.setResetCounter(drone.getResetCounter() - 1);
+//		        	System.out.println("-1");
+		        } else if (drone.getResetCounter() == 1) {
+		        	drone.setResetCounter(drone.getResetCounter() - 1);
+		        	
+		        } else if (drone.getResetCounter() == 0) {
+		        	//do nothing
+		        	int[] coord_temp = {newX,newY};
+					coordinates_fluid.set(i, coord_temp);
+					drone.setHasReachedGrid(true);
+		        }
+			  
+			  
+			  
+			  	int[] coordinate = coordinates_fluid.get(i);//set the int array coordinate to the current drone's destination from the arraylist coordinates_fluid
+			  	int droneX = drone.getX();//get the current done's X position
+		        int droneY = drone.getY();//get the current drone's Y position
+		        int coordX = coordinate[0];//set the coordX variable to the random coordinate
+		        int coordY = coordinate[1];//set the coordY variable to the random coordinate
+		        double angle = Math.atan2(coordY - droneY, coordX - droneX);//finds the angle neccessary to go towards the random coordinate
+		        double dx = DroneFleet.droneSpeed * Math.cos(angle);//finds the movement change needed in the X direction
+		        double dy = DroneFleet.droneSpeed * Math.sin(angle);//finds the movement change needed in the Y direction
+		        drone.x = (droneX + (int)dx);//move the drone's X in the direction of it's random coordinate
+		        drone.y = (droneY + (int)dy);//move the drone's Y in the direction of it's random coordinate
+			  
+//		        drone.x = newX; //Move the drone to the new x position after breaking out of the while loop
+//		        drone.y = newY; //Move the drone to the new y position after breaking out of the while loop
 		        DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 	      }//end specific drone for loop
 	  }//end moveDronesRandom
 	
-	public static void moveSingularDroneRandomInsideArea(drone drone, int boxWidth, int boxHeight) {
+	public static void moveSingularDroneToCornersInsideArea(drone drone, int boxWidth, int boxHeight) {
 		double dronespeed = DroneFleet.droneSpeed;
 	    int newX = drone.targetPositions[drone.currentTargetIndex];
 	    int newY = drone.targetPositions[drone.currentTargetIndex + 1];
@@ -128,7 +240,7 @@ public class Movement {
 	    }
 	}
 	
-	public static void initmoveSingularDroneRandomInsideAreaPositions(int boxWidth, int boxHeight) {
+	public static void initmoveSingularDroneToCornersInsideAreaPositions(int boxWidth, int boxHeight) {
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
 			drone  drone = DroneFleet.drones.get(i);
 			int coordinates[] = coordinates_fluid.get(i);
@@ -248,7 +360,7 @@ public class Movement {
 			if(testdrone.targetPositions != null) {
 				
 			}else {
-				initmoveSingularDroneRandomInsideAreaPositions(cellWidth, cellHeight);
+				initmoveSingularDroneToCornersInsideAreaPositions(cellWidth, cellHeight);
 			}
 		}
 		
@@ -270,7 +382,7 @@ public class Movement {
 		        drone.y = (droneY + (int)dy);//move the drone's Y in the direction of it's box's center Y coordinate
 			  }else if(drone.getHasReachedGrid() == true) {//if the drone has already reached the center point of the grid
 				  //SEARCH THE SMALL GRID?
-				  moveSingularDroneRandomInsideArea(drone, cellWidth, cellHeight);
+				  moveSingularDroneToCornersInsideArea(drone, cellWidth, cellHeight);
 			  }
 		        DroneFleet.dronePaths.get(i).add(new Integer[] {drone.x + drone.getSize()/2, drone.y + drone.getSize()/2});//checks old/new position to draw the position paths
 			  

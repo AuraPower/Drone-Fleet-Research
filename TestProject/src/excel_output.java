@@ -2,12 +2,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.DecimalFormat;
 
 public class excel_output {
     public static void main(String[] args) {
         try {
         	
-        	String file_specs = String.valueOf(Startup_Multi.numTrials) + "Trials_" + String.valueOf(DroneFleet.droneFaultRatio) + "%Faulted_" + String.valueOf(DroneFleet.droneFalsePosChance) + "%FalsePosChance";
+        	DecimalFormat df = new DecimalFormat("#.00");
+
+            // Use the format method to round the double to 2 decimal places
+            String droneFaultRatio_Rounded = df.format(DroneFleet.droneFaultRatio*100);
+            String droneFalsePOsChance_Rounded = df.format(DroneFleet.droneFalsePosChance*100);
+        	
+        	String file_specs = String.valueOf(Startup_Multi.numTrials) + "Trials_" + droneFaultRatio_Rounded + "%Faulted_" + droneFalsePOsChance_Rounded + "%FalsePosChance";
         	
             // Define the file name
             String fileName = "C:\\Users\\Jack Capuano\\Desktop\\SimRuns\\"+file_specs+".csv";

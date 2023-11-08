@@ -10,11 +10,12 @@ import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 50; // number of simulations to run
+	static int numTrials = 100; // number of simulations to run
 	static int numTrialsRun = 1; // do not change this from 1
 	static ArrayList<Integer> numFalsePositives = new ArrayList<>();
 	static ArrayList<Integer> numFalseNegatives = new ArrayList<>();
 	static ArrayList<Integer> timeToFind = new ArrayList<>();
+	static String droneMovementSelectedOption = "Random"; // "Random" or "Grid"
 	
     public static void main(String[] args) {
     	
@@ -29,9 +30,9 @@ public class Startup_Multi {
         for (int i = 0; i < numSimulations; i++) {
             int runType = 1;
             boolean fullMarkerLinesIn = false;
-            int startingxIn = 500; // starting x coord
-            int startingyIn = 500; // starting y coord
-            String droneMovementSelectedOption = "Grid"; // "Random" or "Grid"
+            int startingxIn = DroneFleet.screenX/2; // starting x coord
+            int startingyIn = DroneFleet.screenY/2; // starting y coord
+            
             boolean debugMode = false;
 
             // Create a new instance of DroneFleet
