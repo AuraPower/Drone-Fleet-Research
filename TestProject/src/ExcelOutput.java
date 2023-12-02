@@ -13,7 +13,7 @@ public class ExcelOutput {
 	private ArrayList<Boolean> didFinds = new ArrayList<Boolean>();
 	private ArrayList<Integer> trials = new ArrayList<Integer>();
 	private ArrayList<Target> targetCollection = new ArrayList<Target>();
-	private int perCycle = 5;
+	private int perCycle = 10;
 	
 	public ExcelOutput() {
 
@@ -54,11 +54,13 @@ public class ExcelOutput {
 		String fileName = "TrainingData.csv";
 		
 		//Create FileWriter
-		FileWriter writer = new FileWriter(fileName);
+		FileWriter writer = new FileWriter(fileName, true);
 		PrintWriter appender = new PrintWriter(writer);
 		
+		int lastTrialNum=0;
+		
 		for(int i=0;i<droneCollection.size();i++) {
-        	appender.println(droneCollection.get(i).toString()+","+targetCollection.get(i).toString()+","+canFinds.get(i)+","+didFinds.get(i)+","+cycles.get(i)+","+trials.get(i));
+        	appender.println(droneCollection.get(i).toString()+","+targetCollection.get(i).toString()+","+canFinds.get(i)+","+didFinds.get(i)+","+cycles.get(i)+","+(trials.get(i)+lastTrialNum));
            }
 		
 		appender.close();
