@@ -33,7 +33,7 @@ public class Movement {
 	//false positive chance on move function
 	public static void falsePositiveChance() {
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			  drone cdrone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			  Drone cdrone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 			  
 			  if(cdrone.faulted == true && (Math.random()<DroneFleet.droneFalsePosChance)) { //if the current drone is faulted & a false positive is generated
 				  DroneFleet.falsePositiveCount += 1; //adds to the false positive counter
@@ -51,7 +51,7 @@ public class Movement {
 	}
 	
 	//verifyTargetFind moves the closest drone to the one that "found" a target to verify its find (only works for grid search currently)
-	public static void verifyTargetFind_Grid(drone drone) {//"drone" is the one that "found" a target
+	public static void verifyTargetFind_Grid(Drone drone) {//"drone" is the one that "found" a target
 //		int positionFindOccurredAtX = drone.x;
 //		int positionFindOccurredAtY = drone.y;
 		int[] coordsFindOccurredAt = {drone.x, drone.y};
@@ -62,7 +62,7 @@ public class Movement {
 		} else {//otherwise find the drone after it
 			closestDroneID = drone.droneID + 1;
 		}
-		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the closest drone
+		Drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the closest drone
 //	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target - DEPRECIATED - we use the point at which the "find occured"
 //	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
 	  	cdrone.setHasReachedGrid(false);
@@ -74,7 +74,7 @@ public class Movement {
 		
 	}
 	
-	public static void verifyTargetFind_Random(drone drone) {//"drone" is the one that "found" a target
+	public static void verifyTargetFind_Random(Drone drone) {//"drone" is the one that "found" a target
 		int[] coordsFindOccurredAt = {drone.x, drone.y};
 		//find a random drone via droneID
 		int closestDroneID = 0;
@@ -83,7 +83,7 @@ public class Movement {
 		} else {//otherwise find the drone after it
 			closestDroneID = drone.droneID + 1;
 		}
-		drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the randomly chosen drone
+		Drone cdrone = DroneFleet.drones.get(closestDroneID); // cdrone is the randomly chosen drone
 //	  	int[] newCoordinates = coordinates.get(drone.droneID); //get the coordinates of drone that "found" the target - DEPRECIATED - we use the point at which the "find occured"
 //	  	System.out.println("Drone #" + closestDroneID + "currently at: " + tempCoords[0] +"," + tempCoords[1]+ ", moving to "+ newCoordinates[0] +", "+ newCoordinates[1]);
 	  	cdrone.setHasReachedGrid(false);
@@ -140,7 +140,7 @@ public class Movement {
 		coordinates_fluid.clear();
 //		System.out.println(DroneFleet.drones.size());
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			Drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 			int[] current_coord = {drone.x, drone.y};
 			int[] test = {0,0};
 //			System.out.println("Adding coordinate");
@@ -156,7 +156,7 @@ public class Movement {
 	public static void moveDronesRandomMove() {	  //move moves every drone at the same time (1 call = every drone moves)
 		falsePositiveChance();
 		  for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
+			  Drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected drone
 			  
 			  boolean insideArea=false;
 			  int newX = 0;
@@ -208,7 +208,7 @@ public class Movement {
 	      }//end specific drone for loop
 	  }//end moveDronesRandom
 	
-	public static void moveSingularDroneToCornersInsideArea(drone drone, int boxWidth, int boxHeight) {
+	public static void moveSingularDroneToCornersInsideArea(Drone drone, int boxWidth, int boxHeight) {
 		double dronespeed = DroneFleet.droneSpeed;
 	    int newX = drone.targetPositions[drone.currentTargetIndex];
 	    int newY = drone.targetPositions[drone.currentTargetIndex + 1];
@@ -242,7 +242,7 @@ public class Movement {
 	
 	public static void initmoveSingularDroneToCornersInsideAreaPositions(int boxWidth, int boxHeight) {
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			drone  drone = DroneFleet.drones.get(i);
+			Drone  drone = DroneFleet.drones.get(i);
 			int coordinates[] = coordinates_fluid.get(i);
 		
 			drone.targetPositions = new int[] {coordinates[0], coordinates[1], 
@@ -356,7 +356,7 @@ public class Movement {
 		}
 		
 		if (DroneFleet.drones.size() > 1){
-			drone testdrone = DroneFleet.drones.get(1);
+			Drone testdrone = DroneFleet.drones.get(1);
 			if(testdrone.targetPositions != null) {
 				
 			}else {
@@ -367,7 +367,7 @@ public class Movement {
 		
 		falsePositiveChance(); //checks for false positives by faulted drones and sends the closest drone to check if so (changes the closest drones destination)
 		for (int i = 0; i < DroneFleet.drones.size(); i++) {//specific drone for loop (iterates for every drone)
-			  drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected 
+			  Drone drone = DroneFleet.drones.get(i);//makes the temp drone "drone" have the same attributes as the currently selected 
 			  int[] coordinate = coordinates_fluid.get(i);//set the int array coordinate to the current drone's destination from the arraylist coordinates_fluid
 		        
 			  if(drone.getHasReachedGrid() == false) {//if the drone has not reached the center point of the grid
@@ -416,8 +416,9 @@ public class Movement {
 //target movement -----
 	//random target movement
 	public static void moveTargetsRandom() {//moves the targets 
-		  for (int i = 0; i<DroneFleet.targets.size(); i++) {//for every target
-			  target ctarget = DroneFleet.targets.get(i);//set the current target to the target currently being worked on
+		  //for (int i = 0; i<DroneFleet.targets.size(); i++) {//for every target XXX changed here
+			  //Target ctarget = DroneFleet.targets.get(i);//set the current target to the target currently being worked on
+			  Target ctarget = DroneFleet.targets; // XXX Changed here
 			  boolean insideArea=false;
 			  int newX = 0;
 		      int newY = 0;
@@ -440,4 +441,4 @@ public class Movement {
 		  
 	  }//end target movement
 	
-}
+//} XXX Changed here

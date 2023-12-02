@@ -10,17 +10,19 @@ import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 100; // number of simulations to run
+	static int numTrials = 1; // number of simulations to run
 	static int numTrialsRun = 1; // do not change this from 1
 	static ArrayList<Integer> numFalsePositives = new ArrayList<>();
 	static ArrayList<Integer> numFalseNegatives = new ArrayList<>();
 	static ArrayList<Integer> timeToFind = new ArrayList<>();
 	static String droneMovementSelectedOption = "Random"; // "Random" or "Grid"
+	static ExcelOutput excelOutput = new ExcelOutput();
 	
     public static void main(String[] args) {
     	
+    	
     	for(int j = 0; j < numTrials; j++) {
-    		Startup_Multi.numFalseNegatives.add(0);
+    		numFalseNegatives.add(0);
     		Startup_Multi.numFalsePositives.add(0);
     		Startup_Multi.timeToFind.add(0);
     	}
@@ -46,7 +48,7 @@ public class Startup_Multi {
             sim.setSize(1514, 838);
             sim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             sim.add(simFrame);
-            sim.setVisible(false);//dont need to see empty frames
+            sim.setVisible(false);//Don't need to see empty frames
 
             // Use a CountDownLatch to ensure that the simulation is finished
             CountDownLatch latch = new CountDownLatch(1);
@@ -86,8 +88,12 @@ public class Startup_Multi {
             numTrialsRun += 1;
             
         }
-
-        excel_output.main(args);
+        try {
+			excelOutput.appendTrainingData();
+		} catch (IOException e) {
+			System.out.print("You messed up somewhere in your excelOutput Class");
+			e.printStackTrace();
+		}
         System.exit(0);
     }
 }

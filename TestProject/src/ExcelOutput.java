@@ -1,0 +1,147 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.text.DecimalFormat;
+
+public class ExcelOutput {
+	
+	private ArrayList<Drone> droneCollection = new ArrayList<Drone>();
+	private ArrayList<Integer> cycles = new ArrayList<Integer>();
+	private ArrayList<Boolean> canFinds = new ArrayList<Boolean>();
+	private ArrayList<Boolean> didFinds = new ArrayList<Boolean>();
+	private ArrayList<Integer> trials = new ArrayList<Integer>();
+	private ArrayList<Target> targetCollection = new ArrayList<Target>();
+	private int perCycle = 5;
+	
+	public ExcelOutput() {
+
+	}
+	
+	public void gatherData(ArrayList<Drone> drones, Target target, ArrayList<Integer> foundID, int cycle,  int trialNumber) {	
+		for(Drone drone: drones) {
+			droneCollection.add(drone);
+			canFinds.add(checkForFind.CanFindTarget(drone, target, DroneFleet.droneSearchRadius));
+			targetCollection.add(target);
+			for(int i=0;i<foundID.size();i++) {
+				if (drone.droneID == foundID.get(i))
+					didFinds.add(true);
+				else if(i==foundID.size()-1) {
+					didFinds.add(false);
+				}
+			}
+			cycles.add(cycle);
+			trials.add(trialNumber);// Do we need this?
+		}
+		
+	}
+	
+	public void gatherData(ArrayList<Drone> drones, Target target, int cycle, int trialNumber) {
+		if (cycle%perCycle==0) {
+			for(Drone drone: drones) {
+				droneCollection.add(drone);
+				canFinds.add(checkForFind.CanFindTarget(drone, target, DroneFleet.droneSearchRadius));
+				targetCollection.add(target);
+				didFinds.add(false);
+				cycles.add(cycle);
+				trials.add(trialNumber);// Do we need this?
+			}
+		}
+	}
+	
+	public void appendTrainingData() throws IOException{
+		String fileName = "TrainingData.csv";
+		
+		//Create FileWriter
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter appender = new PrintWriter(writer);
+		
+		for(int i=0;i<droneCollection.size();i++) {
+        	appender.println(droneCollection.get(i).toString()+","+targetCollection.get(i).toString()+","+canFinds.get(i)+","+didFinds.get(i)+","+cycles.get(i)+","+trials.get(i));
+           }
+		
+		appender.close();
+	}
+	
+	public void createTrainingData() throws IOException {
+		
+		String fileName = "TrainingData.csv";
+		
+		// Create a FileWriter to write to the CSV file
+        FileWriter writer = new FileWriter(fileName);
+        writer.append("DroneID, DroneX, DroneY, Faulty, TargetX, TargetY, CanFindTarget, FoundTarget, Cycle, TrialNumber\n");
+        
+        for(int i=0;i<droneCollection.size();i++) {//dataSize will be equal to the size of all the ArrayLists collecting data
+        	writer.append(droneCollection.get(i).toString()+","+targetCollection.get(i).toString()+","+canFinds.get(i)+","+didFinds.get(i)+","+cycles.get(i)+","+trials.get(i));
+        	writer.append("\n");
+        }
+        
+        
+        writer.close();
+	}
+	
+	public void outputNotUseful() {
+        try {
+        	
+        	DecimalFormat df = new DecimalFormat("#.00");
+
+            // Use the format method to round the double to 2 decimal places
+            String droneFaultRatio_Rounded = df.format(DroneFleet.droneFaultRatio*100);
+            String droneFalsePOsChance_Rounded = df.format(DroneFleet.droneFalsePosChance*100);
+        	
+        	String file_specs = String.valueOf(Startup_Multi.numTrials) + "Trials_" + droneFaultRatio_Rounded + "%Faulted_" + droneFalsePOsChance_Rounded + "%FalsePosChance";
+       
+            // Define the file name
+            String fileName = file_specs+".csv";
+          
+
+            // Create a FileWriter to write to the CSV file
+            FileWriter writer = new FileWriter(fileName);
+
+            // Write headers (variable names)
+            writer.append("TTF,False Negatives,False Positives\n");
+
+            // Create a two-dimensional array to store the data
+            List<List<?>> allData = new ArrayList<>();
+            allData.add(Startup_Multi.timeToFind);
+            allData.add(Startup_Multi.numFalseNegatives);
+            allData.add(Startup_Multi.numFalsePositives);
+            
+
+            // Write data from each ArrayList into separate columns
+            writeData(writer, allData);
+
+            // Close the FileWriter
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeData(FileWriter writer, List<List<?>> allData) throws IOException {
+        int numRows = allData.stream().mapToInt(List::size).max().orElse(0);
+
+        for (int row = 0; row < numRows; row++) {
+            for (int i = 0; i < allData.size(); i++) {
+                List<?> data = allData.get(i);
+                if (row < data.size()) {
+                    writeCellValue(writer, data.get(row).toString());
+                }
+                if (i < allData.size() - 1) {
+                    writer.append(",");
+                }
+            }
+            writer.append("\n");
+        }
+    }
+
+    private static void writeCellValue(FileWriter writer, String value) throws IOException {
+        // Escape values with special characters or commas
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            writer.append("\"" + value.replace("\"", "\"\"") + "\"");
+        } else {
+            writer.append(value);
+        }
+    }
+}

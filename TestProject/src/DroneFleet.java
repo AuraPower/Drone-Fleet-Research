@@ -26,12 +26,13 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
  
 //public variables
   //array lists for the drones and drone paths
-      static ArrayList<drone> drones = new ArrayList<drone>();
+      static ArrayList<Drone> drones = new ArrayList<Drone>();
       static ArrayList<ArrayList<Integer[]>> dronePaths = new ArrayList<ArrayList<Integer[]>>();
-  	  static ArrayList<target> targets = new ArrayList<target>();
-//  	  static ArrayList<int[]> gridSearchCoordinateList = new ArrayList<int[]>();
+  	  //static ArrayList<Target> targets = new ArrayList<Target>(); //XXX Changed here
+  	  static Target targets;
+      //static ArrayList<int[]> gridSearchCoordinateList = new ArrayList<int[]>();
   //settings variables
-  	  private static boolean probabilisticRadius = true;
+  	  private static boolean probabilisticRadius = true; //WHY IS THIS THE ONLY PRIVATE VARIABLE
   	  public static boolean fullMarkerLines = false;
   	  public static int screenX = 1500;//screen X size (width) variable
   	  public static int screenY = 800;//screen Y size (height) variable
@@ -55,6 +56,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  public static double droneFalsePosChance = 0.035; 
 	  //drone false positive count
 	  public static double falsePositiveCount = 0;
+	  
   //sim variables
 	  public static int simspeed=1; //lower # is faster
   	  public static int currentFrame = 0;
@@ -75,7 +77,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		  super.paintComponent(g);
 		  drawMarkers(g);//draw the mile markers & label(s)
 		  for (int i = 0; i < drones.size(); i++) {//draw drones and drone path
-			  drone cdrone = drones.get(i);
+			  Drone cdrone = drones.get(i);
 //			  drawDronePath(g, i);//calls the drawDronePath function to draw the drone's path
 			  g.setColor(cdrone.color);
 			  if(Startup.debugMode) {//if the simulation is in debug mode, draw the drones as circles with differentiating colors for faulted agents
@@ -84,11 +86,19 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 				  g.drawImage(droneImg, cdrone.x-cdrone.size/2, cdrone.y-cdrone.size/2, cdrone.x+cdrone.size/2, cdrone.y+cdrone.size/2, 0, 0, 500, 500, null);
 			  }			  
 		  }//end painting drones
-		  for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
-			  target ctarget = targets.get(i);
+		  
+		  /*for (int i = 0; i<targets.size(); i++) {//draw targets (people, etc)
+			  Target ctarget = targets.get(i);
 			  g.setColor(ctarget.color);
 			  g.fillOval(ctarget.getX(), ctarget.getY(), ctarget.getSize(), ctarget.getSize());
 		  }//end painting targets
+		  */ //XXX Changed here
+		  
+		  if(targets != null) {
+			  Target ctarget = targets;
+			  g.setColor(ctarget.color);
+			  g.fillOval(ctarget.getX(), ctarget.getY(), ctarget.getSize(), ctarget.getSize());
+		  }
 	  }//end paintComponent
 	  
 	  public void drawMarkers(Graphics g) {//draw the mile markers and label(s)
@@ -176,15 +186,17 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 		    if(faulted) {
 		    	color = Color.gray;//makes faulted drones gray instead of black
 		    }
-		    simFrame.drones.add(new drone(startingx, startingy, size, color, faulted, droneID));//sends the current drone to the drone arraylist
+		    simFrame.drones.add(new Drone(startingx, startingy, size, color, faulted, droneID));//sends the current drone to the drone arraylist
 		    droneID += 1; //increments the droneID counter
 		    simFrame.dronePaths.add(new ArrayList<Integer[]>());//adds another slot to the dronepath arraylist for every drone created
 	    }//end drone creation loop
 	    
 	    if(isTargetPosRandom) {//checks if the target position is set to random or set
-	    	simFrame.targets.add(new target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    	//XXX Changed here //simFrame.targets.add(new Target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED));//creates actual target (with random x and y) and adds it to the targets arraylist
+	    	simFrame.targets = new Target((int)(Math.random()*1500), (int)(Math.random()*800), targetSize, Color.RED);
 	    }else {//if target position is not random
-	    	simFrame.targets.add(new target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
+	    	//XXX Changed here //simFrame.targets.add(new Target(targetX, targetY, targetSize, Color.RED));	//creates the actual target and adds it to the targets arraylist
+	    	simFrame.targets = new Target(targetX, targetY, targetSize, Color.RED);
 	    }
 	    
 	  	Timer timer = new Timer(simspeed, new ActionListener() {  //MAIN SIM TIMER
@@ -234,7 +246,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	        synchronized (lock) {
 	            drones.clear();
 	            dronePaths.clear();
-	            targets.clear();
+	            //targets.clear(); //XXX Changed here
 //	            gridSearchCoordinateList.clear();
 	            falsePositiveCount = 0;
 	            simFlag = 1;
@@ -253,7 +265,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 
 } //JPanel end
 
-class drone {  //drone class for tracking/moving/etc drones
+class Drone {  //drone class for tracking/moving/etc drones
 		int x;
 		int y;
 		int size;
@@ -264,7 +276,7 @@ class drone {  //drone class for tracking/moving/etc drones
 		boolean hasReachedGrid = false;
 		int[] targetPositions; // List of target positions (center and corners)
 	    int currentTargetIndex; // Index of the current target position
-	public drone(int x, int y, int size, Color color, boolean faulted, int droneID) {//drone constructor
+	public Drone(int x, int y, int size, Color color, boolean faulted, int droneID) {//drone constructor
 		this.x = x;
 	    this.y = y;
 	    this.size = size;
@@ -272,6 +284,12 @@ class drone {  //drone class for tracking/moving/etc drones
 	    this.faulted = faulted; //starts all drones on construction as not faulted
 	    this.droneID = droneID;
 	}//end constructor
+	
+	@Override
+	public String toString() {
+		return droneID+","+x+","+y+","+faulted;
+	}
+	
 	public boolean isFaulted() {
 		return faulted;
 	}
@@ -288,7 +306,7 @@ class drone {  //drone class for tracking/moving/etc drones
 	public Color getColor() {
 		return color;
 	}
-		public int getX() {
+	public int getX() {
 		return x;
 	}
 	public int getY() {
@@ -308,18 +326,22 @@ class drone {  //drone class for tracking/moving/etc drones
 	}
 	}//drone class end
 	
-class target{  //target class for tracking target position, drawing target, etc
+class Target{  //target class for tracking target position, drawing target, etc
 	int x;
 	int y;
 	int size;
 	Color color;
-	public target(int x, int y, int size, Color color) {	//constructor
+	public Target(int x, int y, int size, Color color) {	//constructor
 		this.x = x;
 		this.y = y;
 		this.size = size;
 		this.color = color;
 	}//constructor end
 	//target class methods
+	@Override
+	public String toString() {
+		return x+","+y;
+	}
 		public int getX() {
 			return x;
 		}

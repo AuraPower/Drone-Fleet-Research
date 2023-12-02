@@ -6,7 +6,7 @@ public class App {
 	public static boolean test_mode = true; //Testing mode makes it easier to debug/test things
 	
 	public static void main(String[] args) {
-		while(true) {//start App while loop
+		//while(true) {//start App while loop // What is the point of this while loop?
 //			System.out.println("App Loop");
 			if(DroneFleet.currentFrame==0&&startupFlag==0&&app_mode == 0) {//if the currentFrame is 0 (and its the first time)
 //				System.out.println("Switching Frame to Startup");
@@ -19,7 +19,7 @@ public class App {
 				Startup_Multi.main(args);
 			}
 
-		}//end App while
+		//}//end App while. Why is there a App while?
 	}
 
 }
