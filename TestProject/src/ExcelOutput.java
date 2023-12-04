@@ -2,6 +2,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.text.DecimalFormat;
 
@@ -16,39 +17,21 @@ public class ExcelOutput {
 	private int perCycle = 10;
 	
 	public ExcelOutput() {
-
+		checkForFind.Constructor();
 	}
 	
-	public void gatherData(ArrayList<Drone> drones, Target target, ArrayList<Integer> foundID, int cycle,  int trialNumber) {	
-		for(Drone drone: drones) {
-			droneCollection.add(drone);
-			canFinds.add(checkForFind.CanFindTarget(drone, target, DroneFleet.droneSearchRadius));
+	public void gatherData(ArrayList<Drone> drones, Target target, boolean[] canFind, boolean[] didFind, int cycle,  int trialNumber) {	
+		for(int i=0;i<drones.size();i++) {
+			droneCollection.add(drones.get(i));
 			targetCollection.add(target);
-			for(int i=0;i<foundID.size();i++) {
-				if (drone.droneID == foundID.get(i))
-					didFinds.add(true);
-				else if(i==foundID.size()-1) {
-					didFinds.add(false);
-				}
-			}
+			canFinds.add(canFind[i]);
+			didFinds.add(didFind[i]);
 			cycles.add(cycle);
-			trials.add(trialNumber);// Do we need this?
+			trials.add(trialNumber);
 		}
 		
 	}
 	
-	public void gatherData(ArrayList<Drone> drones, Target target, int cycle, int trialNumber) {
-		if (cycle%perCycle==0) {
-			for(Drone drone: drones) {
-				droneCollection.add(drone);
-				canFinds.add(checkForFind.CanFindTarget(drone, target, DroneFleet.droneSearchRadius));
-				targetCollection.add(target);
-				didFinds.add(false);
-				cycles.add(cycle);
-				trials.add(trialNumber);// Do we need this?
-			}
-		}
-	}
 	
 	public void appendTrainingData() throws IOException{
 		String fileName = "TrainingData.csv";
