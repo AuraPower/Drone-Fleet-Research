@@ -22,7 +22,6 @@ public class checkForFind {
     static int checkForFindFunction(ArrayList<Drone> drones, Target targets, int droneSearchRadius, int simCounter, boolean probabilisticRadius) {
         
     	boolean foundTheTarget = false;
-        ArrayList<Integer> collectedID = new ArrayList<Integer>();
 
         for (int i = 0; i < drones.size(); i++) {
             Drone cdrone = drones.get(i);
@@ -32,7 +31,7 @@ public class checkForFind {
             int ydistance = Math.abs(cdrone.getY() - ctarget.getY());
             double actualdistance = Math.sqrt((Math.pow(xdistance, 2)) + (Math.pow(ydistance, 2)));
 
-            if (actualdistance < droneSearchRadius) {
+            if (actualdistance < droneSearchRadius && (!didFindID[i])) {
             	canFindID[cdrone.droneID] = true;
                 if (probabilisticRadius == false) {
                 	
