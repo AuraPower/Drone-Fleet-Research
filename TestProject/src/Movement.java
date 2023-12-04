@@ -201,6 +201,8 @@ public class Movement {
 		        double dy = DroneFleet.droneSpeed * Math.sin(angle);//finds the movement change needed in the Y direction
 		        drone.x = (droneX + (int)dx);//move the drone's X in the direction of it's random coordinate
 		        drone.y = (droneY + (int)dy);//move the drone's Y in the direction of it's random coordinate
+		        DroneFleet.drones.get(i).x = droneX + (int)dx;
+		        DroneFleet.drones.get(i).y = droneY + (int)dy;
 			  
 //		        drone.x = newX; //Move the drone to the new x position after breaking out of the while loop
 //		        drone.y = newY; //Move the drone to the new y position after breaking out of the while loop

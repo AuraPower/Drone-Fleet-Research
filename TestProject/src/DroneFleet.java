@@ -312,6 +312,14 @@ class Drone {  //drone class for tracking/moving/etc drones
 	public int getY() {
 		return y;
 	}
+	
+	public void setX(int x) {
+		this.x = x;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	
 	public void setColor(Color color) {
 		this.color = color;
 	}

@@ -1,17 +1,10 @@
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 10; // number of simulations to run
+	static int numTrials = 25; // number of simulations to run
 	static int numTrialsRun = 1; // do not change this from 1
 	static ArrayList<Integer> numFalsePositives = new ArrayList<>();
 	static ArrayList<Integer> numFalseNegatives = new ArrayList<>();
@@ -90,23 +83,7 @@ public class Startup_Multi {
             
         }
         
-        File file = new File("TrainingData.csv");
-        if (file.exists()) {
-	        try {
-				excelOutput.appendTrainingData();
-			} catch (IOException e) {
-				System.out.print("You messed up somewhere in your excelOutput Class");
-				e.printStackTrace();
-			}
-        }
-        else {
-        	try {
-				excelOutput.createTrainingData();
-			} catch (IOException e) {
-				System.out.print("You messed up somewhere in your excelOutput Class");
-				e.printStackTrace();
-			}
-        }
+        
         System.exit(0);
     }
 }

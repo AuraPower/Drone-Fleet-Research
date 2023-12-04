@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class checkForFind {
 
@@ -78,14 +77,14 @@ public class checkForFind {
         }
 
         if (foundTheTarget) {
-            Startup_Multi.excelOutput.gatherData(drones, targets, canFindID, didFindID, simCounter, Startup_Multi.numTrialsRun);
+            Startup_Multi.excelOutput.gatherData(canFindID, didFindID, simCounter, Startup_Multi.numTrialsRun);
             // Reset for next simulation
             dronesFoundTarget = 0;
             Constructor();
             // End simulation
             return 0; 
         } else {
-        	Startup_Multi.excelOutput.gatherData(drones, targets, canFindID, didFindID, simCounter, Startup_Multi.numTrialsRun);
+        	Startup_Multi.excelOutput.gatherData(canFindID, didFindID, simCounter, Startup_Multi.numTrialsRun);
             return 1; // Continue simulation
         }
     }
