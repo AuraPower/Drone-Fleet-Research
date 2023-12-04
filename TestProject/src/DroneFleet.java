@@ -51,7 +51,7 @@ public class DroneFleet extends JPanel {//create the DroneFleet class and have i
 	  //drone speed
 	  public static int droneSpeed = 100;//in pixels (100 pixel = 1 mile. happens once per simcount, therefore if simcount is assumed to be 1/10 hour, dronespeed/100 can be miles per hour)
 	  //drone fault ratio (0-1, 0 being no drones faulted, 1 being 100%)
-	  public static double droneFaultRatio = 0.40;
+	  public static double droneFaultRatio = 0.10;
 	  //drone false positive ratio (if faulted, chance every move to generate a false positive (0.1=10% chance every time a faulted drone moves)
 	  public static double droneFalsePosChance = 0.035; 
 	  //drone false positive count

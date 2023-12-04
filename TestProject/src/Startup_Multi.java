@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Startup_Multi {
 	
-	static int numTrials = 25; // number of simulations to run
+	static int numTrials = 10; // number of simulations to run
 	static int numTrialsRun = 1; // do not change this from 1
 	static ArrayList<Integer> numFalsePositives = new ArrayList<>();
 	static ArrayList<Integer> numFalseNegatives = new ArrayList<>();
